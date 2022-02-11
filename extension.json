@@ -1,0 +1,41 @@
+{
+	"name": "Semantic Structured Discussions",
+	"type": "semantic",
+	"version": "0.1.0",
+	"author": [
+		"Marijn van Wezel"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:Semantic_Structured_Discussions",
+	"descriptionmsg": "semanticstructureddiscussions-desc",
+	"license-name": "GPL-2.0-or-later",
+	"requires": {
+		"MediaWiki": ">= 1.35",
+		"extensions": {
+			"Flow": ">= 1.2.0"
+		},
+		"platform": {
+			"php": ">= 7.4"
+		}
+	},
+	"MessagesDirs": {
+		"SemanticStructuredDiscussions": [
+			"i18n"
+		]
+	},
+	"AutoloadNamespaces": {
+		"SemanticStructuredDiscussions\\": "src/"
+	},
+	"ExtensionMessagesFiles": {
+		"SemanticStructuredDiscussionsMagic": "i18n/SemanticStructuredDiscussions.i18n.php"
+	},
+	"ServiceWiringFiles": [
+		"src/SemanticStructuredDiscussions.ServiceWiring.php"
+	],
+	"Hooks": {
+		"SMW::Property::initProperties": "SemanticStructuredDiscussions\\SemanticMediaWiki\\Hooks::onInitProperties",
+		"SMW::Store::BeforeDataUpdateComplete": "SemanticStructuredDiscussions\\SemanticMediaWiki\\Hooks::onBeforeDataUpdateComplete"
+	},
+	"callback": "SemanticStructuredDiscussions\\Hooks::onRegisterExtension",
+	"load_composer_autoloader": true,
+	"manifest_version": 2
+}
