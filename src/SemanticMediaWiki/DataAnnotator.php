@@ -58,7 +58,7 @@ class DataAnnotator {
 
 	private function getAnnotations( Topic $topic ): array {
 		return [
-			$this->annotatorFactory->newLastEditDateAnnotation( $topic )
+			$this->annotatorFactory->newModificationDateAnnotation( $topic )
 		];
 	}
 }

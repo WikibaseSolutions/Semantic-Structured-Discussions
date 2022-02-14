@@ -26,17 +26,15 @@ use SMW\SemanticData;
 use SMWDITime;
 
 /**
- * This annotation contains information about when a topic was last edited.
+ * This annotation contains information about the replies to a topic.
  */
-class LastEditDateAnnotation implements Annotation {
+class RepliesAnnotation implements Annotation {
 	/**
 	 * @var Topic The topic to use for the annotation
 	 */
 	protected Topic $topic;
 
 	/**
-	 * TopicAnnotation constructor.
-	 *
 	 * @param Topic $topic The topic to use for the annotation
 	 */
 	public function __construct( Topic $topic ) {
@@ -47,35 +45,21 @@ class LastEditDateAnnotation implements Annotation {
 	 * @inheritDoc
 	 */
 	public function addAnnotation( SemanticData $semanticData ): void {
-		$timestamp = $this->topic->getLastEditedTimestamp();
-		$dataItem = new SMWDITime(
-			SMWDITime::CM_GREGORIAN,
-			$timestamp['year'],
-			$timestamp['month'],
-			$timestamp['day'],
-			$timestamp['hour'],
-			$timestamp['minute'],
-			$timestamp['second']
-		);
 
-		$semanticData->addPropertyObjectValue(
-			new DIProperty( self::getId() ),
-			$dataItem
-		);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public static function getId(): string {
-		return '__sd_last_edit_date';
+		return '__sd_replies';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public static function getLabel(): string {
-		return 'Topic last edited on';
+		return 'Topic replies';
 	}
 
 	/**
@@ -84,7 +68,7 @@ class LastEditDateAnnotation implements Annotation {
 	public static function getDefinition(): array {
 		return [
 			'label' => self::getLabel(),
-			'type' => '_dat',
+			'type' => '', // TODO: Figure out appropriate type
 			'viewable' => true,
 			'annotable' => false
 		];

@@ -21,7 +21,7 @@
 namespace SemanticStructuredDiscussions\SemanticMediaWiki;
 
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\Annotation;
-use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\LastEditDateAnnotation;
+use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ModificationDateAnnotation;
 use SemanticStructuredDiscussions\StructuredDiscussions\Topic;
 
 /**
@@ -29,12 +29,12 @@ use SemanticStructuredDiscussions\StructuredDiscussions\Topic;
  */
 class AnnotationFactory {
 	/**
-	 * Constructs a new "last edited on" annotation.
+	 * Constructs a new "modification date" annotation.
 	 *
 	 * @param Topic $topic
 	 * @return Annotation
 	 */
-	public function newLastEditDateAnnotation( Topic $topic ): Annotation {
-		return new LastEditDateAnnotation( $topic );
+	public function newModificationDateAnnotation( Topic $topic ): Annotation {
+		return new ModificationDateAnnotation( $topic );
 	}
 }

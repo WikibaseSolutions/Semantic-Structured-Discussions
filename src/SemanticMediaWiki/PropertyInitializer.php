@@ -20,7 +20,7 @@
 
 namespace SemanticStructuredDiscussions\SemanticMediaWiki;
 
-use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\LastEditDateAnnotation;
+use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ModificationDateAnnotation;
 use SMW\PropertyRegistry;
 
 /**
@@ -28,7 +28,7 @@ use SMW\PropertyRegistry;
  */
 class PropertyInitializer {
 	public const ANNOTATIONS = [
-		LastEditDateAnnotation::class
+		ModificationDateAnnotation::class
 	];
 
 	/**

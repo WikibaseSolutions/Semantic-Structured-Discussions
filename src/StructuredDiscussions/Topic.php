@@ -84,7 +84,7 @@ final class Topic {
 	 *
 	 * @return array
 	 */
-	public function getLastEditedTimestamp(): array {
+	public function getLastModifiedTimestamp(): array {
 		return date_parse_from_format( 'YmdHis', $this->getRootRevision()['timestamp'] );
 	}
 
