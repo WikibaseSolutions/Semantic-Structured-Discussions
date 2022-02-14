@@ -20,24 +20,47 @@
 
 namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators;
 
+use SemanticStructuredDiscussions\StructuredDiscussions\Topic;
 use SMW\DIProperty;
 use SMW\SemanticData;
 use SMWDITime;
 
 /**
- * This annotation contains information about when a topic was created.
+ * This annotation contains information about when a topic was last edited.
  */
-class CreationDateAnnotation implements Annotation {
-	private const PROP_SD_CREATION_DATE = '__sd_creation_date';
-	private const PROP_LABEL_SD_CREATION_DATE = 'Topic created on';
+class LastEditDateAnnotation implements Annotation {
+	/**
+	 * @var Topic The topic to use for the annotation
+	 */
+	protected Topic $topic;
+
+	/**
+	 * TopicAnnotation constructor.
+	 *
+	 * @param Topic $topic The topic to use for the annotation
+	 */
+	public function __construct( Topic $topic ) {
+		$this->topic = $topic;
+	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function addAnnotation( SemanticData $semanticData ): void {
+		$timestamp = $this->topic->getLastEditedTimestamp();
+		$dataItem = new SMWDITime(
+			SMWDITime::CM_GREGORIAN,
+			$timestamp['year'],
+			$timestamp['month'],
+			$timestamp['day'],
+			$timestamp['hour'],
+			$timestamp['minute'],
+			$timestamp['second']
+		);
+
 		$semanticData->addPropertyObjectValue(
-			new DIProperty( self::PROP_SD_CREATION_DATE ),
-			new SMWDITime( SMWDITime::CM_JULIAN, 2022 )
+			new DIProperty( self::getId() ),
+			$dataItem
 		);
 	}
 
@@ -45,7 +68,14 @@ class CreationDateAnnotation implements Annotation {
 	 * @inheritDoc
 	 */
 	public static function getId(): string {
-		return self::PROP_SD_CREATION_DATE;
+		return '__sd_last_edit_date';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static function getLabel(): string {
+		return 'Topic last edited on';
 	}
 
 	/**
@@ -53,7 +83,7 @@ class CreationDateAnnotation implements Annotation {
 	 */
 	public static function getDefinition(): array {
 		return [
-			'label' => self::PROP_LABEL_SD_CREATION_DATE,
+			'label' => self::getLabel(),
 			'type' => '_dat',
 			'viewable' => true,
 			'annotable' => false

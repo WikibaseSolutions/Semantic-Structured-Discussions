@@ -21,13 +21,20 @@
 namespace SemanticStructuredDiscussions\SemanticMediaWiki;
 
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\Annotation;
-use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\CreationDateAnnotation;
+use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\LastEditDateAnnotation;
+use SemanticStructuredDiscussions\StructuredDiscussions\Topic;
 
 /**
  * The annotation factory is responsible for constructing annotation objects.
  */
-final class AnnotationFactory {
-	public function newCreationDateAnnotation(): Annotation {
-		return new CreationDateAnnotation();
+class AnnotationFactory {
+	/**
+	 * Constructs a new "last edited on" annotation.
+	 *
+	 * @param Topic $topic
+	 * @return Annotation
+	 */
+	public function newLastEditDateAnnotation( Topic $topic ): Annotation {
+		return new LastEditDateAnnotation( $topic );
 	}
 }

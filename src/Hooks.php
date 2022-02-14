@@ -20,7 +20,15 @@
 
 namespace SemanticStructuredDiscussions;
 
-use Flow\Container;
+use Flow\Api\ApiFlowBase;
+use SemanticStructuredDiscussions\SemanticMediaWiki\PropertyInitializer;
+use SMW\Maintenance\DataRebuilder;
+use SMW\Options;
+use SMW\PropertyRegistry;
+use SMW\SemanticData;
+use SMW\Services\ServicesFactory;
+use SMW\Store;
+use SMW\StoreFactory;
 
 /**
  * @note This class should only contain static methods.
@@ -39,5 +47,83 @@ final class Hooks {
 		// Enable semantic annotations for pages in the "Topic" namespace
 		global $smwgNamespacesWithSemanticLinks;
 		$smwgNamespacesWithSemanticLinks[NS_TOPIC] = true;
+	}
+
+	/**
+	 * Hook to add additional predefined properties.
+	 *
+	 * @link https://github.com/SemanticMediaWiki/SemanticMediaWiki/blob/master/docs/examples/hook.property.initproperties.md
+	 * @param PropertyRegistry $propertyRegistry
+	 * @return bool Always returns true
+	 */
+	public static function onInitProperties( PropertyRegistry $propertyRegistry ): bool {
+		$propertyInitializer = new PropertyInitializer( $propertyRegistry );
+		$propertyInitializer->initializeProperties();
+
+		return true;
+	}
+
+	/**
+	 * Hook to extend the SemanticData object before the update is completed.
+	 *
+	 * @link https://github.com/SemanticMediaWiki/SemanticMediaWiki/blob/master/docs/technical/hooks/hook.store.beforedataupdatecomplete.md
+	 * @param Store $store
+	 * @param SemanticData $semanticData
+	 * @return bool
+	 */
+	public static function onBeforeDataUpdateComplete( Store $store, SemanticData $semanticData ): bool {
+		if ( $semanticData->getSubject()->getNamespace() !== NS_TOPIC ) {
+			return true;
+		}
+
+		$title = $semanticData->getSubject()->getTitle();
+
+		if ( $title === null ) {
+			return true;
+		}
+
+		$topicRepository = Services::getTopicRepository();
+		$topic = $topicRepository->getByTitle( $title );
+
+		if ( $topic === null ) {
+			return true;
+		}
+
+		$dataAnnotator = Services::getDataAnnotator();
+		$dataAnnotator->addAnnotations( $topic, $semanticData );
+
+		return true;
+	}
+
+	/**
+	 * Called after a Flow API module has been executed.
+	 *
+	 * @param ApiFlowBase $module
+	 * @link https://www.mediawiki.org/wiki/Extension:StructuredDiscussions/Hooks/APIFlowAfterExecute
+	 */
+	public static function onAPIFlowAfterExecute( ApiFlowBase $module ): void {
+		if ( !$module->isWriteMode() ) {
+			return;
+		}
+
+		$page = $module->getRequest()->getVal( 'page' );
+
+		if ( $page === null ) {
+			return;
+		}
+
+		$store = StoreFactory::getStore();
+		$store->setOption( Store::OPT_CREATE_UPDATE_JOB, false );
+
+		$dataRebuilder = new DataRebuilder(
+			$store,
+			ServicesFactory::getInstance()->newTitleFactory()
+		);
+
+		$dataRebuilder->setOptions(
+			new Options( [ "page" => $page ] )
+		);
+
+		$dataRebuilder->rebuild();
 	}
 }

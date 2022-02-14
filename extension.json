@@ -11,6 +11,7 @@
 	"requires": {
 		"MediaWiki": ">= 1.35",
 		"extensions": {
+			"SemanticMediaWiki": ">= 3.3.0",
 			"Flow": ">= 1.2.0"
 		},
 		"platform": {
@@ -32,8 +33,9 @@
 		"src/SemanticStructuredDiscussions.ServiceWiring.php"
 	],
 	"Hooks": {
-		"SMW::Property::initProperties": "SemanticStructuredDiscussions\\SemanticMediaWiki\\Hooks::onInitProperties",
-		"SMW::Store::BeforeDataUpdateComplete": "SemanticStructuredDiscussions\\SemanticMediaWiki\\Hooks::onBeforeDataUpdateComplete"
+		"APIFlowAfterExecute": "SemanticStructuredDiscussions\\Hooks::onAPIFlowAfterExecute",
+		"SMW::Property::initProperties": "SemanticStructuredDiscussions\\Hooks::onInitProperties",
+		"SMW::Store::BeforeDataUpdateComplete": "SemanticStructuredDiscussions\\Hooks::onBeforeDataUpdateComplete"
 	},
 	"callback": "SemanticStructuredDiscussions\\Hooks::onRegisterExtension",
 	"load_composer_autoloader": true,

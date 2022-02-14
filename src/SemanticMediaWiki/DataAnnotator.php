@@ -21,29 +21,44 @@
 namespace SemanticStructuredDiscussions\SemanticMediaWiki;
 
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\Annotation;
+use SemanticStructuredDiscussions\StructuredDiscussions\Topic;
+use SemanticStructuredDiscussions\StructuredDiscussions\TopicRepository;
 use SMW\SemanticData;
+use Title;
 
+/**
+ * This class is responsible for annotating the SemanticData object with information about the given Topic.
+ */
 class DataAnnotator {
+	/**
+	 * @var AnnotationFactory The factory to use for constructing new annotations
+	 */
 	private AnnotationFactory $annotatorFactory;
 
-	public function __construct(AnnotationFactory $annotatorFactory ) {
+	/**
+	 * @param AnnotationFactory $annotatorFactory The factory to use for constructing new annotations
+	 */
+	public function __construct( AnnotationFactory $annotatorFactory ) {
 		$this->annotatorFactory = $annotatorFactory;
 	}
 
-	public function addAnnotations( SemanticData $semanticData ): void {
-		$annotations = $this->getAnnotations();
+	/**
+	 * Adds annotations to the given SemanticData object about the given Topic.
+	 *
+	 * @param Topic $topic The topic about which to add annotations
+	 * @param SemanticData $semanticData The SemanticData object to add the annotations to
+	 */
+	public function addAnnotations( Topic $topic, SemanticData $semanticData ): void {
+		$annotations = $this->getAnnotations( $topic );
 
 		foreach ( $annotations as $annotation ) {
 			$annotation->addAnnotation( $semanticData );
 		}
 	}
 
-	/**
-	 * @return Annotation[]
-	 */
-	private function getAnnotations(): array {
+	private function getAnnotations( Topic $topic ): array {
 		return [
-			$this->annotatorFactory->newCreationDateAnnotation()
+			$this->annotatorFactory->newLastEditDateAnnotation( $topic )
 		];
 	}
 }

@@ -38,6 +38,13 @@ interface Annotation {
 	public static function getId(): string;
 
 	/**
+	 * Returns the label of this annotation.
+	 *
+	 * @return string
+	 */
+	public static function getLabel(): string;
+
+	/**
 	 * Returns the definition of this annotation.
 	 *
 	 * @return array
