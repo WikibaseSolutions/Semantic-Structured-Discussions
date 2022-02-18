@@ -21,7 +21,9 @@
 namespace SemanticStructuredDiscussions;
 
 use MediaWiki\MediaWikiServices;
-use SemanticStructuredDiscussions\SemanticMediaWiki\AnnotationFactory;
+use SemanticStructuredDiscussions\Hooks\SemanticStructuredDiscussionsHookRunner;
+use SemanticStructuredDiscussions\SemanticMediaWiki\AnnotatorFactory;
+use SemanticStructuredDiscussions\SemanticMediaWiki\AnnotatorStore;
 use SemanticStructuredDiscussions\SemanticMediaWiki\DataAnnotator;
 use SemanticStructuredDiscussions\StructuredDiscussions\TopicRepository;
 use Wikimedia\Services\ServiceContainer;
@@ -41,9 +43,9 @@ final class Services {
 	private function __construct() {
 	}
 
-	public static function getAnnotationFactory( ?ServiceContainer $services = null ): AnnotationFactory {
+	public static function getAnnotatorStore( ?ServiceContainer $services = null ): AnnotatorStore {
 		return ( $services ?? MediaWikiServices::getInstance() )
-			->getService( 'SemanticStructuredDiscussions.SemanticMediaWiki.AnnotationFactory' );
+			->getService( 'SemanticStructuredDiscussions.SemanticMediaWiki.AnnotatorStore' );
 	}
 
 	public static function getDataAnnotator( ?ServiceContainer $services = null ): DataAnnotator {

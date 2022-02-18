@@ -30,7 +30,7 @@
 		"SemanticStructuredDiscussionsMagic": "i18n/SemanticStructuredDiscussions.i18n.php"
 	},
 	"ServiceWiringFiles": [
-		"src/SemanticStructuredDiscussions.ServiceWiring.php"
+		"SemanticStructuredDiscussions.ServiceWiring.php"
 	],
 	"Hooks": {
 		"APIFlowAfterExecute": "SemanticStructuredDiscussions\\Hooks::onAPIFlowAfterExecute",

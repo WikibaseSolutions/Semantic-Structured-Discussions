@@ -18,34 +18,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators;
+namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators;
 
-use SemanticStructuredDiscussions\StructuredDiscussions\Topic;
 use SMW\DIProperty;
 use SMW\SemanticData;
 use SMWDITime;
 
 /**
- * This annotation contains information about when a topic was last modified.
+ * This annotation contains information about when a reply was last modified.
  */
-class ModificationDateAnnotation implements Annotation {
-	/**
-	 * @var Topic The topic to use for the annotation
-	 */
-	protected Topic $topic;
-
-	/**
-	 * @param Topic $topic The topic to use for the annotation
-	 */
-	public function __construct( Topic $topic ) {
-		$this->topic = $topic;
-	}
-
+class ModificationDateAnnotator extends ReplyAnnotator {
 	/**
 	 * @inheritDoc
 	 */
 	public function addAnnotation( SemanticData $semanticData ): void {
-		$timestamp = $this->topic->getLastModifiedTimestamp();
+		$timestamp = $this->reply->getLastModifiedTimestamp();
 		$dataItem = new SMWDITime(
 			SMWDITime::CM_GREGORIAN,
 			$timestamp['year'],
@@ -66,14 +53,14 @@ class ModificationDateAnnotation implements Annotation {
 	 * @inheritDoc
 	 */
 	public static function getId(): string {
-		return '__sd_modification_date';
+		return '__sd_reply_modification_date';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public static function getLabel(): string {
-		return 'Topic modification date';
+		return 'Reply modification date';
 	}
 
 	/**

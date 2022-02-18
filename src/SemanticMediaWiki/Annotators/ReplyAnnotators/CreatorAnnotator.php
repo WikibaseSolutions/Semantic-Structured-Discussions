@@ -18,36 +18,49 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators;
+namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators;
 
+use SMW\DIProperty;
 use SMW\SemanticData;
+use SMWDIBlob;
 
-interface Annotation {
+/**
+ * This annotation contains information about who created a reply.
+ */
+class CreatorAnnotator extends ReplyAnnotator {
 	/**
-	 * Add the annotation to the given SemanticData object.
-	 *
-	 * @param SemanticData $semanticData
+	 * @inheritDoc
 	 */
-	public function addAnnotation( SemanticData $semanticData ): void;
-
-	/**
-	 * Returns the ID of this annotation.
-	 *
-	 * @return string
-	 */
-	public static function getId(): string;
-
-	/**
-	 * Returns the label of this annotation.
-	 *
-	 * @return string
-	 */
-	public static function getLabel(): string;
+	public function addAnnotation( SemanticData $semanticData ): void {
+		$semanticData->addPropertyObjectValue(
+			new DIProperty( self::getId() ),
+			new SMWDIBlob( $this->reply->getCreator() )
+		);
+	}
 
 	/**
-	 * Returns the definition of this annotation.
-	 *
-	 * @return array
+	 * @inheritDoc
 	 */
-	public static function getDefinition(): array;
+	public static function getId(): string {
+		return '__sd_reply_creator';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static function getLabel(): string {
+		return 'Reply creator';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static function getDefinition(): array {
+		return [
+			'label' => self::getLabel(),
+			'type' => '_txt',
+			'viewable' => true,
+			'annotable' => false
+		];
+	}
 }

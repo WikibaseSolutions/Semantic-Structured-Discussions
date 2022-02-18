@@ -26,16 +26,16 @@ use Title;
  * Contains methods for retrieving Topic objects from Structured Discussions.
  */
 class TopicRepository {
-	use ApiTrait;
+	use CallSubmoduleTrait;
 
 	/**
 	 * Retrieves the Topic for a given Title. This Title object should be the Title of the actual topic page in the
 	 * Topic namespace (NS_TOPIC).
 	 *
 	 * @param Title $title
-	 * @return Topic|null The corresponding Topic, or NULL on failure
+	 * @return SDTopic|null The corresponding Topic, or NULL when the topic does not exist or when something went wrong
 	 */
-	public function getByTitle( Title $title ): ?Topic {
+	public function getByTitle( Title $title ): ?SDTopic {
 		$parameters = ['page' => $title->getFullText(), 'vtformat' => 'wikitext'];
 		$viewTopic = $this->callSubmodule( 'view-topic', $parameters );
 
@@ -43,6 +43,10 @@ class TopicRepository {
 			return null;
 		}
 
-		return new Topic( $viewTopic['topic'] );
+		if ( !isset( $viewTopic['topic'] ) ) {
+			return null;
+		}
+
+		return new SDTopic( $viewTopic['topic'] );
 	}
 }

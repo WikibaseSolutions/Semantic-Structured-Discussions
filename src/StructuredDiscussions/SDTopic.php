@@ -20,10 +20,12 @@
 
 namespace SemanticStructuredDiscussions\StructuredDiscussions;
 
+use Flow\Container;
 use Flow\Exception\CrossWikiException;
-use Flow\Exception\DataModelException;
+use Flow\Exception\InvalidInputException;
 use Flow\Model\Workflow;
-use MWTimestamp;
+use Flow\WorkflowLoader;
+use Flow\WorkflowLoaderFactory;
 use Title;
 
 /**
@@ -31,17 +33,16 @@ use Title;
  *
  * @link https://www.mediawiki.org/w/api.php?action=help&modules=flow%2Bview-topic
  */
-final class Topic {
-	private const REPLY_CHANGE_TYPES = ['edit-post', 'reply'];
-
+final class SDTopic {
 	/**
 	 * @var array The topic info (in the format of the "view-topic" API module)
 	 */
 	private array $topicInfo;
 
-	private Title $ownerTitle;
-	private Title $topicTitle;
-	private Workflow $workflow;
+	/**
+	 * @var Title A cache for the associated title (so we don't have to query the database twice)
+	 */
+	private Title $associatedTitle;
 
 	/**
 	 * Topic constructor.
@@ -58,7 +59,7 @@ final class Topic {
 	 * @return string
 	 */
 	public function getTitle(): string {
-		return $this->getRootRevision()['properties']['topic-of-post'];
+		return $this->getRootRevision()['properties']['topic-of-post']['plaintext'];
 	}
 
 	/**
@@ -71,7 +72,7 @@ final class Topic {
 	}
 
 	/**
-	 * Returns the username of the user that created the topic.
+	 * Returns the user that created the topic.
 	 *
 	 * @return string
 	 */
@@ -89,69 +90,55 @@ final class Topic {
 	}
 
 	/**
+	 * Returns true if this topic is moderated.
+	 *
+	 * @return bool
+	 */
+	public function isModerated(): bool {
+		return $this->getRootRevision()['isModerated'];
+	}
+
+	/**
 	 * Returns the replies to this topic.
 	 *
-	 * @return Reply[]
+	 * @return SDReply[]
 	 */
 	public function getReplies(): array {
-		$replyRevisions = array_filter( $this->getRevisions(), function ( array $revision ) {
-			return in_array( $revision['changeType'], self::REPLY_CHANGE_TYPES, true );
-		} );
+		$replies = $this->recursiveGetReplies( $this->getRootPostId() );
+		$replyRevisions = array_map( fn ( string $postId ) => $this->getRevisionByPostId( $postId ), $replies );
 
-		return array_map( function ( array $revision ): Reply {
-			return new Reply( $revision );
-		}, $replyRevisions );
+		return array_map( fn ( array $revision ): SDReply => new SDReply( $revision ), $replyRevisions );
 	}
 
 	/**
-	 * Returns the Title of the owner of this topic. The owner is the article this topic belongs to.
+	 * Returns the Title of the owner of this topic. The owner is the board where the topic was created.
 	 *
 	 * @return Title
-	 * @throws DataModelException
 	 * @throws CrossWikiException
+	 * @throws InvalidInputException
 	 */
-	public function getOwnerTitle(): Title {
-		if ( !isset( $this->ownerTitle ) ) {
-			$this->ownerTitle = $this->getWorkflow()->getOwnerTitle();
+	public function getTopicOwner(): Title {
+		if ( !isset( $this->associatedTitle ) ) {
+			$this->associatedTitle = $this->getWorkflow()->getOwnerTitle();
 		}
 
-		return $this->ownerTitle;
+		return $this->associatedTitle;
 	}
 
 	/**
-	 * Returns the workflow.
+	 * Returns the workflow of this topic.
 	 *
 	 * @return Workflow
-	 * @throws DataModelException
+	 * @throws CrossWikiException
+	 * @throws InvalidInputException
 	 */
 	private function getWorkflow(): Workflow {
-		if ( !isset( $this->workflow ) ) {
-			$this->workflow = Workflow::create( 'topic', $this->getTopicTitle() );;
-		}
+		/** @var WorkflowLoaderFactory $workflowFactory */
+		$workflowFactory = Container::get( 'factory.loader.workflow' );
+		/** @var WorkflowLoader $workflowLoader */
+		$workflowLoader = $workflowFactory->createWorkflowLoader( Title::makeTitleSafe( NS_TOPIC, $this->topicInfo['workflowId'] ) );
 
-		return $this->workflow;
-	}
-
-	/**
-	 * Returns the Title of the Topic page.
-	 *
-	 * @return Title
-	 */
-	private function getTopicTitle(): Title {
-		if ( !isset( $this->topicTitle ) ) {
-			$this->topicTitle = Title::makeTitleSafe( NS_TOPIC, $this->getWorkflowId() );
-		}
-
-		return $this->topicTitle;
-	}
-
-	/**
-	 * Returns the ID of the workflow.
-	 *
-	 * @return string
-	 */
-	private function getWorkflowId(): string {
-		return $this->topicInfo['workflowId'];
+		return $workflowLoader->getWorkflow();
 	}
 
 	/**
@@ -179,25 +166,29 @@ final class Topic {
 	 * @return array
 	 */
 	private function getRevisionByPostId( string $postId ): array {
-		return $this->getRevisionById( $this->topicInfo['posts'][$postId][0] );
+		$revisionId = $this->topicInfo['posts'][$postId][0];
+
+		return $this->topicInfo['revisions'][$revisionId];
 	}
 
 	/**
-	 * Returns the revision with the given revision ID.
+	 * Recursively get the replies for the given post ID. This returns a flat array of all the replies to a given post, including replies to
+	 * replies.
 	 *
-	 * @param string $revisionId
+	 * This function is used to get all the replies for a given postId (usually the root/topic postId) in a flat array, so we can store each
+	 * reply as a subobject, since nested subobjects are not supported by Semantic MediaWiki.
+	 *
+	 * @param string $postId
 	 * @return array
 	 */
-	private function getRevisionById( string $revisionId ): array {
-		return $this->getRevisions()[$revisionId];
-	}
+	private function recursiveGetReplies( string $postId ): array {
+		$revision = $this->getRevisionByPostId( $postId );
+		$replies = $revision['replies'] ?? [];
 
-	/**
-	 * Returns the revisions of this topic.
-	 *
-	 * @return array
-	 */
-	private function getRevisions(): array {
-		return $this->topicInfo['revisions'];
+		foreach ( $replies as $replyPostId ) {
+			$replies = array_merge( $replies, $this->recursiveGetReplies( $replyPostId ) );
+		}
+
+		return array_unique( $replies );
 	}
 }

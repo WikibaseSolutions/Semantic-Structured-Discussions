@@ -19,7 +19,9 @@
  */
 
 use MediaWiki\MediaWikiServices;
-use SemanticStructuredDiscussions\SemanticMediaWiki\AnnotationFactory;
+use SemanticStructuredDiscussions\Hooks\SemanticStructuredDiscussionsHookRunner;
+use SemanticStructuredDiscussions\SemanticMediaWiki\AnnotatorFactory;
+use SemanticStructuredDiscussions\SemanticMediaWiki\AnnotatorStore;
 use SemanticStructuredDiscussions\SemanticMediaWiki\DataAnnotator;
 use SemanticStructuredDiscussions\Services;
 use SemanticStructuredDiscussions\StructuredDiscussions\TopicRepository;
@@ -33,12 +35,12 @@ use SemanticStructuredDiscussions\StructuredDiscussions\TopicRepository;
 
 return [
 	/**
-	 * Instantiator function for the AnnotationFactory singleton.
+	 * Instantiator function for the AnnotatorStore singleton.
 	 *
-	 * @return AnnotationFactory The AnnotationFactory singleton
+	 * @return AnnotatorStore The AnnotatorStore singleton
 	 */
-	'SemanticStructuredDiscussions.SemanticMediaWiki.AnnotationFactory' => static function (): AnnotationFactory {
-		return new AnnotationFactory();
+	'SemanticStructuredDiscussions.SemanticMediaWiki.AnnotatorStore' => static function (): AnnotatorStore {
+		return new AnnotatorStore();
 	},
 	/**
 	 * Instantiator function for the DataAnnotator singleton.
@@ -46,16 +48,14 @@ return [
 	 * @return DataAnnotator The DataAnnotator singleton
 	 */
 	'SemanticStructuredDiscussions.SemanticMediaWiki.DataAnnotator' => static function ( MediaWikiServices $services ): DataAnnotator {
-		return new DataAnnotator(
-			Services::getAnnotationFactory( $services )
-		);
+		return new DataAnnotator( Services::getAnnotatorStore( $services ) );
 	},
 	/**
 	 * Instantiator function for the TopicRepository singleton.
 	 *
 	 * @return TopicRepository The TopicRepository singleton
 	 */
-	'SemanticStructuredDiscussions.StructuredDiscussions.TopicRepository' => static function ( MediaWikiServices $services ): TopicRepository {
+	'SemanticStructuredDiscussions.StructuredDiscussions.TopicRepository' => static function (): TopicRepository {
 		return new TopicRepository();
 	},
 ];

@@ -18,23 +18,49 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace SemanticStructuredDiscussions\SemanticMediaWiki;
+namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators;
 
-use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\Annotation;
-use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ModificationDateAnnotation;
-use SemanticStructuredDiscussions\StructuredDiscussions\Topic;
+use SMW\DIProperty;
+use SMW\SemanticData;
+use SMWDIBlob;
 
 /**
- * The annotation factory is responsible for constructing annotation objects.
+ * This annotation contains information about the title of a topic.
  */
-class AnnotationFactory {
+class TitleAnnotator extends TopicAnnotator {
 	/**
-	 * Constructs a new "modification date" annotation.
-	 *
-	 * @param Topic $topic
-	 * @return Annotation
+	 * @inheritDoc
 	 */
-	public function newModificationDateAnnotation( Topic $topic ): Annotation {
-		return new ModificationDateAnnotation( $topic );
+	public function addAnnotation( SemanticData $semanticData ): void {
+		$semanticData->addPropertyObjectValue(
+			new DIProperty( self::getId() ),
+			new SMWDIBlob( $this->topic->getTitle() )
+		);
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static function getId(): string {
+		return '__sd_topic_title';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static function getLabel(): string {
+		return 'Topic title';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static function getDefinition(): array {
+		return [
+			'label' => self::getLabel(),
+			'type' => '_txt',
+			'viewable' => true,
+			'annotable' => false
+		];
 	}
 }

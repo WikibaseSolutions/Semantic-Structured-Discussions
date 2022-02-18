@@ -18,48 +18,38 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators;
+namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators;
 
-use SemanticStructuredDiscussions\StructuredDiscussions\Topic;
 use SMW\DIProperty;
 use SMW\SemanticData;
-use SMWDITime;
+use SMWDIBlob;
 
 /**
- * This annotation contains information about the replies to a topic.
+ * This annotation contains information about the content of a reply.
  */
-class RepliesAnnotation implements Annotation {
-	/**
-	 * @var Topic The topic to use for the annotation
-	 */
-	protected Topic $topic;
-
-	/**
-	 * @param Topic $topic The topic to use for the annotation
-	 */
-	public function __construct( Topic $topic ) {
-		$this->topic = $topic;
-	}
-
+class ContentAnnotator extends ReplyAnnotator {
 	/**
 	 * @inheritDoc
 	 */
 	public function addAnnotation( SemanticData $semanticData ): void {
-
+		$semanticData->addPropertyObjectValue(
+			new DIProperty( self::getId() ),
+			new SMWDIBlob( $this->reply->getContent() )
+		);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public static function getId(): string {
-		return '__sd_replies';
+		return '__sd_reply_content';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public static function getLabel(): string {
-		return 'Topic replies';
+		return 'Reply content';
 	}
 
 	/**
@@ -68,7 +58,7 @@ class RepliesAnnotation implements Annotation {
 	public static function getDefinition(): array {
 		return [
 			'label' => self::getLabel(),
-			'type' => '', // TODO: Figure out appropriate type
+			'type' => '_txt',
 			'viewable' => true,
 			'annotable' => false
 		];

@@ -41,7 +41,7 @@ final class Hooks {
 	}
 
 	/**
-	 * Called after the extension is registered.
+	 * Called after the extension is registered. Used to enable semantic links for the topic namespace.
 	 */
 	public static function onRegisterExtension(): void {
 		// Enable semantic annotations for pages in the "Topic" namespace
@@ -52,53 +52,46 @@ final class Hooks {
 	/**
 	 * Hook to add additional predefined properties.
 	 *
-	 * @link https://github.com/SemanticMediaWiki/SemanticMediaWiki/blob/master/docs/examples/hook.property.initproperties.md
 	 * @param PropertyRegistry $propertyRegistry
-	 * @return bool Always returns true
+	 * @return void
+	 * @link https://github.com/SemanticMediaWiki/SemanticMediaWiki/blob/master/docs/examples/hook.property.initproperties.md
 	 */
-	public static function onInitProperties( PropertyRegistry $propertyRegistry ): bool {
+	public static function onInitProperties( PropertyRegistry $propertyRegistry ): void {
 		$propertyInitializer = new PropertyInitializer( $propertyRegistry );
 		$propertyInitializer->initializeProperties();
-
-		return true;
 	}
 
 	/**
 	 * Hook to extend the SemanticData object before the update is completed.
 	 *
-	 * @link https://github.com/SemanticMediaWiki/SemanticMediaWiki/blob/master/docs/technical/hooks/hook.store.beforedataupdatecomplete.md
 	 * @param Store $store
 	 * @param SemanticData $semanticData
-	 * @return bool
+	 * @return void
+	 * @link https://github.com/SemanticMediaWiki/SemanticMediaWiki/blob/master/docs/technical/hooks/hook.store.beforedataupdatecomplete.md
 	 */
-	public static function onBeforeDataUpdateComplete( Store $store, SemanticData $semanticData ): bool {
-		if ( $semanticData->getSubject()->getNamespace() !== NS_TOPIC ) {
-			return true;
-		}
-
+	public static function onBeforeDataUpdateComplete( Store $store, SemanticData $semanticData ): void {
 		$title = $semanticData->getSubject()->getTitle();
 
 		if ( $title === null ) {
-			return true;
+			return;
 		}
 
-		$topicRepository = Services::getTopicRepository();
-		$topic = $topicRepository->getByTitle( $title );
+		$topic = Services::getTopicRepository()->getByTitle( $title );
 
 		if ( $topic === null ) {
-			return true;
+			return;
 		}
 
-		$dataAnnotator = Services::getDataAnnotator();
-		$dataAnnotator->addAnnotations( $topic, $semanticData );
-
-		return true;
+		Services::getDataAnnotator()->addAnnotations( $topic, $title, $semanticData );
 	}
 
 	/**
 	 * Called after a Flow API module has been executed.
 	 *
-	 * @param ApiFlowBase $module
+	 * This hook is used to (forcefully) update the semantic index after a write has been performed by Flow/SD.
+	 *
+	 * @param ApiFlowBase $module An instance of Flow\Api\ApiFlowBase
+	 * @return void
 	 * @link https://www.mediawiki.org/wiki/Extension:StructuredDiscussions/Hooks/APIFlowAfterExecute
 	 */
 	public static function onAPIFlowAfterExecute( ApiFlowBase $module ): void {
@@ -115,15 +108,8 @@ final class Hooks {
 		$store = StoreFactory::getStore();
 		$store->setOption( Store::OPT_CREATE_UPDATE_JOB, false );
 
-		$dataRebuilder = new DataRebuilder(
-			$store,
-			ServicesFactory::getInstance()->newTitleFactory()
-		);
-
-		$dataRebuilder->setOptions(
-			new Options( [ "page" => $page ] )
-		);
-
+		$dataRebuilder = new DataRebuilder( $store, ServicesFactory::getInstance()->newTitleFactory() );
+		$dataRebuilder->setOptions( new Options( [ 'page' => $page ] ) );
 		$dataRebuilder->rebuild();
 	}
 }

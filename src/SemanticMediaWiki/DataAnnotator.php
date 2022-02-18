@@ -20,45 +20,96 @@
 
 namespace SemanticStructuredDiscussions\SemanticMediaWiki;
 
-use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\Annotation;
-use SemanticStructuredDiscussions\StructuredDiscussions\Topic;
-use SemanticStructuredDiscussions\StructuredDiscussions\TopicRepository;
+use SemanticStructuredDiscussions\StructuredDiscussions\SDReply;
+use SemanticStructuredDiscussions\StructuredDiscussions\SDTopic;
 use SMW\SemanticData;
+use SMW\Subobject;
 use Title;
 
 /**
- * This class is responsible for annotating the SemanticData object with information about the given Topic.
+ * This class is responsible for annotating the SemanticData object with information about the given topic and its replies.
  */
 class DataAnnotator {
 	/**
-	 * @var AnnotationFactory The factory to use for constructing new annotations
+	 * @var AnnotatorStore
 	 */
-	private AnnotationFactory $annotatorFactory;
+	private AnnotatorStore $annotatorStore;
 
 	/**
-	 * @param AnnotationFactory $annotatorFactory The factory to use for constructing new annotations
+	 * @param AnnotatorStore $annotatorStore
 	 */
-	public function __construct( AnnotationFactory $annotatorFactory ) {
-		$this->annotatorFactory = $annotatorFactory;
+	public function __construct( AnnotatorStore $annotatorStore ) {
+		$this->annotatorStore = $annotatorStore;
 	}
 
 	/**
 	 * Adds annotations to the given SemanticData object about the given Topic.
 	 *
-	 * @param Topic $topic The topic about which to add annotations
+	 * @param SDTopic $topic The topic about which to add annotations
+	 * @param Title $title The Title of the page to annotate
 	 * @param SemanticData $semanticData The SemanticData object to add the annotations to
 	 */
-	public function addAnnotations( Topic $topic, SemanticData $semanticData ): void {
-		$annotations = $this->getAnnotations( $topic );
+	public function addAnnotations( SDTopic $topic, Title $title, SemanticData $semanticData ): void {
+		if ( $topic->isModerated() ) {
+			// Do not annotate the topic if it is moderated, since this WILL lead to information leakage
+			return;
+		}
 
-		foreach ( $annotations as $annotation ) {
-			$annotation->addAnnotation( $semanticData );
+		$this->addTopicAnnotations( $topic, $semanticData );
+		$this->addRepliesAnnotations( $topic->getReplies(), $title, $semanticData );
+	}
+
+	/**
+	 * Add the given replies as subobjects to the given SemanticData object.
+	 *
+	 * @param SDReply[] $replies
+	 * @param Title $title
+	 * @param SemanticData $semanticData
+	 */
+	private function addRepliesAnnotations( array $replies, Title $title, SemanticData $semanticData ): void {
+		foreach ( $replies as $reply ) {
+			if ( $reply->isModerated() ) {
+				// Do not annotate the reply if it is moderated, since this WILL lead to information leakage
+				continue;
+			}
+
+			$subobject = new Subobject( $title );
+			$subobject->setEmptyContainerForId( sprintf( 'flow-post-%s', $reply->getPostId() ) );
+
+			/** @var SemanticData $subobjectData */
+			$subobjectData = $subobject->getSemanticData();
+
+			$this->addReplyAnnotations( $reply, $subobjectData );
+
+			$semanticData->addSubobject( $subobject );
 		}
 	}
 
-	private function getAnnotations( Topic $topic ): array {
-		return [
-			$this->annotatorFactory->newModificationDateAnnotation( $topic )
-		];
+	/**
+	 * Add annotations about the given topic to the given SemanticData object.
+	 *
+	 * @param SDTopic $topic
+	 * @param SemanticData $semanticData
+	 */
+	private function addTopicAnnotations( SDTopic $topic, SemanticData $semanticData ): void {
+		$topicAnnotators = $this->annotatorStore->getTopicAnnotators( $topic );
+
+		foreach ( $topicAnnotators as $annotator ) {
+			$annotator->addAnnotation( $semanticData );
+		}
+	}
+
+	/**
+	 * Add annotations about the given reply to the given SemanticData object.
+	 *
+	 * @param SDReply $reply
+	 * @param SemanticData $semanticData
+	 */
+	private function addReplyAnnotations( SDReply $reply, SemanticData $semanticData ): void {
+		$replyAnnotators = $this->annotatorStore->getReplyAnnotators( $reply );
+
+		foreach ( $replyAnnotators as $annotator ) {
+			$annotator->addAnnotation( $semanticData );
+		}
 	}
 }

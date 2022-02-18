@@ -26,10 +26,7 @@ use FauxRequest;
 use MediaWiki\Session\SessionManager;
 use MWException;
 
-/**
- * Contains a function to perform an action against the StructuredDiscussions API.
- */
-trait ApiTrait {
+trait CallSubmoduleTrait {
 	/**
 	 * Calls the specified submodule of the StructuredDiscussions API and returns the result.
 	 *

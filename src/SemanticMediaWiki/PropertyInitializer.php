@@ -20,25 +20,20 @@
 
 namespace SemanticStructuredDiscussions\SemanticMediaWiki;
 
-use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ModificationDateAnnotation;
 use SMW\PropertyRegistry;
 
 /**
  * Initializes the predefined properties required by for Structured Discussions.
  */
 class PropertyInitializer {
-	public const ANNOTATIONS = [
-		ModificationDateAnnotation::class
-	];
-
 	/**
 	 * @var PropertyRegistry The PropertyRegistry in which to initialise the predefined properties
 	 */
 	private PropertyRegistry $propertyRegistry;
 
 	/**
-     * @param PropertyRegistry $propertyRegistry The PropertyRegistry in which to initialise the predefined properties
-     */
+	 * @param PropertyRegistry $propertyRegistry The PropertyRegistry in which to initialise the predefined properties
+	 */
     public function __construct( PropertyRegistry $propertyRegistry ) {
     	$this->propertyRegistry = $propertyRegistry;
     }
@@ -85,12 +80,13 @@ class PropertyInitializer {
 	/**
 	 * Returns the property definitions.
 	 *
-	 * @return array
+	 * @return array[]
 	 */
-	private static function getPropertyDefinitions(): array {
+	private function getPropertyDefinitions(): array {
 		$definitions = [];
+		$annotations = AnnotatorStore::getAnnotators();
 
-		foreach ( self::ANNOTATIONS as $annotation ) {
+		foreach ( $annotations as $annotation ) {
 			$definitions[$annotation::getId()] = $annotation::getDefinition();
 		}
 

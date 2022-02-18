@@ -27,7 +27,7 @@ use MWTimestamp;
  *
  * @link https://www.mediawiki.org/w/api.php?action=help&modules=flow%2Bview-topic
  */
-final class Reply {
+final class SDReply {
 	/**
 	 * @var array
 	 */
@@ -40,6 +40,15 @@ final class Reply {
 	 */
 	public function __construct( array $replyRevision ) {
 		$this->replyRevision = $replyRevision;
+	}
+
+	/**
+	 * Returns the postId of this comment.
+	 *
+	 * @return string
+	 */
+	public function getPostId(): string {
+		return $this->replyRevision['postId'];
 	}
 
 	/**
@@ -67,5 +76,14 @@ final class Reply {
 	 */
 	public function getLastModifiedTimestamp(): array {
 		return date_parse_from_format( 'YmdHis', $this->replyRevision['timestamp'] );
+	}
+
+	/**
+	 * Returns true if this reply is moderated.
+	 *
+	 * @return bool
+	 */
+	public function isModerated(): bool {
+		return $this->replyRevision['isModerated'];
 	}
 }
