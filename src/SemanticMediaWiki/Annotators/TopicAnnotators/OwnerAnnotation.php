@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare( strict_types=1 );
 /**
  * Semantic Structured Discussions MediaWiki extension
  * Copyright (C) 2022  Wikibase Solutions
@@ -21,7 +21,6 @@
 namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators;
 
 use Flow\Exception\CrossWikiException;
-use Flow\Exception\DataModelException;
 use Flow\Exception\InvalidInputException;
 use SMW\DIProperty;
 use SMW\SemanticData;
@@ -36,7 +35,7 @@ class OwnerAnnotation extends TopicAnnotator {
 	public function addAnnotation( SemanticData $semanticData ): void {
 		try {
 			$topicArticle = $this->topic->getTopicOwner();
-		} catch (CrossWikiException|InvalidInputException $e) {
+		} catch ( CrossWikiException | InvalidInputException $e ) {
 			// Silently ignore specifically these exceptions
 			return;
 		}

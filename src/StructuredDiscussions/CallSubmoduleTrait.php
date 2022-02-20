@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare( strict_types=1 );
 /**
  * Semantic Structured Discussions MediaWiki extension
  * Copyright (C) 2022  Wikibase Solutions
@@ -36,7 +36,7 @@ trait CallSubmoduleTrait {
 	 * @return array|null The result, or NULL on failure
 	 */
 	private function callSubmodule( string $submodule, array $parameters, bool $wasPosted = false ): ?array {
-		$parameters = ['action' => 'flow', 'submodule' => $submodule] + $parameters;
+		$parameters = [ 'action' => 'flow', 'submodule' => $submodule ] + $parameters;
 		$globalSession = SessionManager::getGlobalSession();
 
 		try {
@@ -53,6 +53,6 @@ trait CallSubmoduleTrait {
 			return null;
 		}
 
-		return $module->getResult()->getResultData( ['flow', $submodule, 'result'], [ 'Strip' => 'all' ] );
+		return $module->getResult()->getResultData( [ 'flow', $submodule, 'result' ], [ 'Strip' => 'all' ] );
 	}
 }

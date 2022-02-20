@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare( strict_types=1 );
 /**
  * Semantic Structured Discussions MediaWiki extension
  * Copyright (C) 2022  Wikibase Solutions
@@ -34,9 +34,9 @@ class PropertyInitializer {
 	/**
 	 * @param PropertyRegistry $propertyRegistry The PropertyRegistry in which to initialise the predefined properties
 	 */
-    public function __construct( PropertyRegistry $propertyRegistry ) {
-    	$this->propertyRegistry = $propertyRegistry;
-    }
+	public function __construct( PropertyRegistry $propertyRegistry ) {
+		$this->propertyRegistry = $propertyRegistry;
+	}
 
 	/**
 	 * Initialize the predefined properties.

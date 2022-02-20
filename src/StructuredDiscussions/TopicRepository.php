@@ -1,4 +1,4 @@
-<?php  declare(strict_types=1);
+<?php declare( strict_types=1 );
 /**
  * Semantic Structured Discussions MediaWiki extension
  * Copyright (C) 2022  Wikibase Solutions
@@ -36,7 +36,7 @@ class TopicRepository {
 	 * @return SDTopic|null The corresponding Topic, or NULL when the topic does not exist or when something went wrong
 	 */
 	public function getByTitle( Title $title ): ?SDTopic {
-		$parameters = ['page' => $title->getFullText(), 'vtformat' => 'wikitext'];
+		$parameters = [ 'page' => $title->getFullText(), 'vtformat' => 'wikitext' ];
 		$viewTopic = $this->callSubmodule( 'view-topic', $parameters );
 
 		if ( $viewTopic === null ) {

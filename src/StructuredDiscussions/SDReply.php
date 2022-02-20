@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare( strict_types=1 );
 /**
  * Semantic Structured Discussions MediaWiki extension
  * Copyright (C) 2022  Wikibase Solutions
@@ -19,8 +19,6 @@
  */
 
 namespace SemanticStructuredDiscussions\StructuredDiscussions;
-
-use MWTimestamp;
 
 /**
  * Class that serves as a wrapper over a reply revision from the "view-topic" API submodule.
@@ -85,5 +83,24 @@ final class SDReply {
 	 */
 	public function isModerated(): bool {
 		return $this->replyRevision['isModerated'];
+	}
+
+	/**
+	 * Returns the moderation state.
+	 *
+	 * @return string
+	 */
+	public function getModerationState(): string {
+		return $this->replyRevision['moderateState'] ?? '';
+	}
+
+	/**
+	 * Returns true if any user that is able to view the topic is also able to view this reply. This is not
+	 * always the case, since a reply can be hidden, suppressed or deleted.
+	 *
+	 * @return bool
+	 */
+	public function isEveryoneAllowed(): bool {
+		return !$this->isModerated();
 	}
 }

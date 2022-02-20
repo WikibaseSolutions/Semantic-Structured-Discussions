@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare( strict_types=1 );
 /**
  * Semantic Structured Discussions MediaWiki extension
  * Copyright (C) 2022  Wikibase Solutions
@@ -45,6 +45,7 @@ final class Hooks {
 	 */
 	public static function onRegisterExtension(): void {
 		// Enable semantic annotations for pages in the "Topic" namespace
+		// phpcs:ignore MediaWiki.NamingConventions.ValidGlobalName.allowedPrefix
 		global $smwgNamespacesWithSemanticLinks;
 		$smwgNamespacesWithSemanticLinks[NS_TOPIC] = true;
 	}
@@ -82,7 +83,7 @@ final class Hooks {
 			return;
 		}
 
-		Services::getDataAnnotator()->addAnnotations( $topic, $title, $semanticData );
+		Services::getDataAnnotator()->addAnnotations( $topic, $semanticData );
 	}
 
 	/**
