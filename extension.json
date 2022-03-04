@@ -11,7 +11,7 @@
 	"requires": {
 		"MediaWiki": ">= 1.35",
 		"extensions": {
-			"SemanticMediaWiki": ">= 3.3.0",
+			"SemanticMediaWiki": ">= 3.2.0",
 			"Flow": ">= 1.2.0"
 		},
 		"platform": {
