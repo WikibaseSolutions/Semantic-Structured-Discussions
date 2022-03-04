@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare( strict_types=1 );
 /**
  * Semantic Structured Discussions MediaWiki extension
  * Copyright (C) 2022  Wikibase Solutions
@@ -24,8 +24,14 @@ use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\Annotator;
 use SemanticStructuredDiscussions\StructuredDiscussions\SDTopic;
 
 abstract class TopicAnnotator implements Annotator {
+	/**
+	 * @var SDTopic The topic-information to use for annotating
+	 */
 	protected SDTopic $topic;
 
+	/**
+	 * @param SDTopic $topic The topic-information to use for annotating
+	 */
 	public function __construct( SDTopic $topic ) {
 		$this->topic = $topic;
 	}

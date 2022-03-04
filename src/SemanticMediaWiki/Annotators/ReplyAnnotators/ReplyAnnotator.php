@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare( strict_types=1 );
 /**
  * Semantic Structured Discussions MediaWiki extension
  * Copyright (C) 2022  Wikibase Solutions
@@ -24,8 +24,14 @@ use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\Annotator;
 use SemanticStructuredDiscussions\StructuredDiscussions\SDReply;
 
 abstract class ReplyAnnotator implements Annotator {
+	/**
+	 * @var SDReply The reply-information to use for annotating
+	 */
 	protected SDReply $reply;
 
+	/**
+	 * @param SDReply $reply The reply-information to use for annotating
+	 */
 	public function __construct( SDReply $reply ) {
 		$this->reply = $reply;
 	}

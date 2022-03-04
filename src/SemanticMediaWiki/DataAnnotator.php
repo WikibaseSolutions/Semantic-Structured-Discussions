@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare( strict_types=1 );
 /**
  * Semantic Structured Discussions MediaWiki extension
  * Copyright (C) 2022  Wikibase Solutions
@@ -27,7 +27,8 @@ use SMW\Subobject;
 use Title;
 
 /**
- * This class is responsible for annotating the SemanticData object with information about the given topic and its replies.
+ * This class is responsible for annotating the SemanticData object with information about
+ * the given topic and its replies.
  */
 class DataAnnotator {
 	/**
@@ -46,17 +47,16 @@ class DataAnnotator {
 	 * Adds annotations to the given SemanticData object about the given Topic.
 	 *
 	 * @param SDTopic $topic The topic about which to add annotations
-	 * @param Title $title The Title of the page to annotate
 	 * @param SemanticData $semanticData The SemanticData object to add the annotations to
 	 */
-	public function addAnnotations( SDTopic $topic, Title $title, SemanticData $semanticData ): void {
-		if ( $topic->isModerated() ) {
-			// Do not annotate the topic if it is moderated, since this WILL lead to information leakage
+	public function addAnnotations( SDTopic $topic, SemanticData $semanticData ): void {
+		if ( !$topic->isEveryoneAllowed() ) {
+			// Do not annotate the topic if it is not viewable by everyone, since this WILL lead to information leakage
 			return;
 		}
 
 		$this->addTopicAnnotations( $topic, $semanticData );
-		$this->addRepliesAnnotations( $topic->getReplies(), $title, $semanticData );
+		$this->addRepliesAnnotations( $topic->getReplies(), $semanticData );
 	}
 
 	/**
@@ -66,20 +66,18 @@ class DataAnnotator {
 	 * @param Title $title
 	 * @param SemanticData $semanticData
 	 */
-	private function addRepliesAnnotations( array $replies, Title $title, SemanticData $semanticData ): void {
+	private function addRepliesAnnotations( array $replies, SemanticData $semanticData ): void {
 		foreach ( $replies as $reply ) {
-			if ( $reply->isModerated() ) {
-				// Do not annotate the reply if it is moderated, since this WILL lead to information leakage
+			if ( !$reply->isEveryoneAllowed() ) {
+				// Do not annotate the reply if it is not viewable by everyone, since this WILL lead to
+				// information leakage
 				continue;
 			}
 
-			$subobject = new Subobject( $title );
+			$subobject = new Subobject( $semanticData->getSubject()->getTitle() );
 			$subobject->setEmptyContainerForId( sprintf( 'flow-post-%s', $reply->getPostId() ) );
 
-			/** @var SemanticData $subobjectData */
-			$subobjectData = $subobject->getSemanticData();
-
-			$this->addReplyAnnotations( $reply, $subobjectData );
+			$this->addReplyAnnotations( $reply, $subobject->getSemanticData() );
 
 			$semanticData->addSubobject( $subobject );
 		}

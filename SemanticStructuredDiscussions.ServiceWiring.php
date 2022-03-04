@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare( strict_types=1 );
 /**
  * Semantic Structured Discussions MediaWiki extension
  * Copyright (C) 2022  Wikibase Solutions
@@ -19,8 +19,6 @@
  */
 
 use MediaWiki\MediaWikiServices;
-use SemanticStructuredDiscussions\Hooks\SemanticStructuredDiscussionsHookRunner;
-use SemanticStructuredDiscussions\SemanticMediaWiki\AnnotatorFactory;
 use SemanticStructuredDiscussions\SemanticMediaWiki\AnnotatorStore;
 use SemanticStructuredDiscussions\SemanticMediaWiki\DataAnnotator;
 use SemanticStructuredDiscussions\Services;
@@ -47,7 +45,9 @@ return [
 	 *
 	 * @return DataAnnotator The DataAnnotator singleton
 	 */
-	'SemanticStructuredDiscussions.SemanticMediaWiki.DataAnnotator' => static function ( MediaWikiServices $services ): DataAnnotator {
+	'SemanticStructuredDiscussions.SemanticMediaWiki.DataAnnotator' => static function (
+		MediaWikiServices $services
+	): DataAnnotator {
 		return new DataAnnotator( Services::getAnnotatorStore( $services ) );
 	},
 	/**

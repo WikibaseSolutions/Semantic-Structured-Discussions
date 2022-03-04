@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare( strict_types=1 );
 /**
  * Semantic Structured Discussions MediaWiki extension
  * Copyright (C) 2022  Wikibase Solutions
@@ -21,8 +21,6 @@
 namespace SemanticStructuredDiscussions;
 
 use MediaWiki\MediaWikiServices;
-use SemanticStructuredDiscussions\Hooks\SemanticStructuredDiscussionsHookRunner;
-use SemanticStructuredDiscussions\SemanticMediaWiki\AnnotatorFactory;
 use SemanticStructuredDiscussions\SemanticMediaWiki\AnnotatorStore;
 use SemanticStructuredDiscussions\SemanticMediaWiki\DataAnnotator;
 use SemanticStructuredDiscussions\StructuredDiscussions\TopicRepository;
@@ -43,16 +41,34 @@ final class Services {
 	private function __construct() {
 	}
 
+	/**
+	 * Returns the AnnotatorStore singleton.
+	 *
+	 * @param ServiceContainer|null $services
+	 * @return AnnotatorStore
+	 */
 	public static function getAnnotatorStore( ?ServiceContainer $services = null ): AnnotatorStore {
 		return ( $services ?? MediaWikiServices::getInstance() )
 			->getService( 'SemanticStructuredDiscussions.SemanticMediaWiki.AnnotatorStore' );
 	}
 
+	/**
+	 * Returns the DataAnnotator singleton.
+	 *
+	 * @param ServiceContainer|null $services
+	 * @return DataAnnotator
+	 */
 	public static function getDataAnnotator( ?ServiceContainer $services = null ): DataAnnotator {
 		return ( $services ?? MediaWikiServices::getInstance() )
 			->getService( 'SemanticStructuredDiscussions.SemanticMediaWiki.DataAnnotator' );
 	}
 
+	/**
+	 * Returns the TopicRepository singleton.
+	 *
+	 * @param ServiceContainer|null $services
+	 * @return TopicRepository
+	 */
 	public static function getTopicRepository( ?ServiceContainer $services = null ): TopicRepository {
 		return ( $services ?? MediaWikiServices::getInstance() )
 			->getService( 'SemanticStructuredDiscussions.StructuredDiscussions.TopicRepository' );

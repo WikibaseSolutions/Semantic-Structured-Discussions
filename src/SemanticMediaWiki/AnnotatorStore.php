@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare( strict_types=1 );
 /**
  * Semantic Structured Discussions MediaWiki extension
  * Copyright (C) 2022  Wikibase Solutions
@@ -20,18 +20,20 @@
 
 namespace SemanticStructuredDiscussions\SemanticMediaWiki;
 
-use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators\ReplyAnnotator;
+// @codingStandardsIgnoreStart
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators\ContentAnnotator as ReplyContentAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators\CreatorAnnotator as ReplyCreatorAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators\ModificationDateAnnotator as ReplyModificationDateAnnotator;
-use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\TopicAnnotator;
+use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators\ReplyAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\CreatorAnnotator as TopicCreatorAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\ModificationDateAnnotator as TopicModificationDateAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\OwnerAnnotation as TopicOwnerAnnotation;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\SummaryAnnotator as TopicSummaryAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\TitleAnnotator as TopicTitleAnnotator;
+use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\TopicAnnotator;
 use SemanticStructuredDiscussions\StructuredDiscussions\SDReply;
 use SemanticStructuredDiscussions\StructuredDiscussions\SDTopic;
+// @codingStandardsIgnoreEnd
 
 class AnnotatorStore {
 	private const TOPIC_ANNOTATORS = [

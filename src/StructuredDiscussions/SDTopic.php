@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare( strict_types=1 );
 /**
  * Semantic Structured Discussions MediaWiki extension
  * Copyright (C) 2022  Wikibase Solutions
@@ -23,9 +23,8 @@ namespace SemanticStructuredDiscussions\StructuredDiscussions;
 use Flow\Container;
 use Flow\Exception\CrossWikiException;
 use Flow\Exception\InvalidInputException;
+use Flow\Model\AbstractRevision;
 use Flow\Model\Workflow;
-use Flow\WorkflowLoader;
-use Flow\WorkflowLoaderFactory;
 use Title;
 
 /**
@@ -99,6 +98,29 @@ final class SDTopic {
 	}
 
 	/**
+	 * Returns the moderation state.
+	 *
+	 * @return string
+	 */
+	public function getModerationState(): string {
+		return $this->getRootRevision()['moderateState'] ?? AbstractRevision::MODERATED_NONE;
+	}
+
+	/**
+	 * Returns true if any user that is able to view the topic owner is also able to view this topic.
+	 * This is not always the case, since a topic can be hidden, suppressed or deleted.
+	 *
+	 * @return bool
+	 */
+	public function isEveryoneAllowed(): bool {
+		$moderationState = $this->getModerationState();
+
+		// Everyone is allowed if the topic is not moderated or is locked
+		return $moderationState === AbstractRevision::MODERATED_NONE ||
+			$moderationState === AbstractRevision::MODERATED_LOCKED;
+	}
+
+	/**
 	 * Returns the replies to this topic.
 	 *
 	 * @return SDReply[]
@@ -133,10 +155,9 @@ final class SDTopic {
 	 * @throws InvalidInputException
 	 */
 	private function getWorkflow(): Workflow {
-		/** @var WorkflowLoaderFactory $workflowFactory */
 		$workflowFactory = Container::get( 'factory.loader.workflow' );
-		/** @var WorkflowLoader $workflowLoader */
-		$workflowLoader = $workflowFactory->createWorkflowLoader( Title::makeTitleSafe( NS_TOPIC, $this->topicInfo['workflowId'] ) );
+		$title = Title::makeTitleSafe( NS_TOPIC, $this->topicInfo['workflowId'] );
+		$workflowLoader = $workflowFactory->createWorkflowLoader( $title );
 
 		return $workflowLoader->getWorkflow();
 	}
@@ -172,11 +193,12 @@ final class SDTopic {
 	}
 
 	/**
-	 * Recursively get the replies for the given post ID. This returns a flat array of all the replies to a given post, including replies to
-	 * replies.
+	 * Recursively get the replies for the given post ID. This returns a flat array of all the
+	 * replies to a given post, including replies to replies.
 	 *
-	 * This function is used to get all the replies for a given postId (usually the root/topic postId) in a flat array, so we can store each
-	 * reply as a subobject, since nested subobjects are not supported by Semantic MediaWiki.
+	 * This function is used to get all the replies for a given postId (usually the root/topic postId) in a flat
+	 * array, so we can store each reply as a subobject, since nested subobjects are not supported by Semantic
+	 * MediaWiki.
 	 *
 	 * @param string $postId
 	 * @return array
