@@ -47,7 +47,7 @@ final class Hooks {
 		// Enable semantic annotations for pages in the "Topic" namespace
 		// phpcs:ignore MediaWiki.NamingConventions.ValidGlobalName.allowedPrefix
 		global $smwgNamespacesWithSemanticLinks;
-		$smwgNamespacesWithSemanticLinks[NS_TOPIC] = true;
+		$smwgNamespacesWithSemanticLinks[2600] = true;
 	}
 
 	/**
