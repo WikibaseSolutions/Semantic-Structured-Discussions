@@ -24,6 +24,8 @@ use Flow\Exception\CrossWikiException;
 use Flow\Exception\InvalidInputException;
 use SMW\DIProperty;
 use SMW\SemanticData;
+use SMWDIBlob;
+use Title;
 
 /**
  * This annotation contains information about the owner of a topic.
@@ -40,9 +42,14 @@ class OwnerAnnotation extends TopicAnnotator {
 			return;
 		}
 
+		if ( $topicArticle->isTalkPage() ) {
+			// Get the corresponding non-talk page
+			$topicArticle = Title::makeTitleSafe( $topicArticle->getNamespace() - 1, $topicArticle->getText() );
+		}
+
 		$semanticData->addPropertyObjectValue(
 			new DIProperty( self::getId() ),
-			new \SMWDIWikiPage( $topicArticle->getDBkey(), $topicArticle->getNamespace() )
+			new SMWDIBlob( $topicArticle->getFullText() )
 		);
 	}
 
@@ -66,7 +73,7 @@ class OwnerAnnotation extends TopicAnnotator {
 	public static function getDefinition(): array {
 		return [
 			'label' => self::getLabel(),
-			'type' => '_wpg',
+			'type' => '_txt',
 			'viewable' => true,
 			'annotable' => false
 		];
