@@ -20,6 +20,9 @@
 
 namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators;
 
+use MediaWiki\MediaWikiServices;
+use Parser;
+use SemanticStructuredDiscussions\StructuredDiscussions\SDReply;
 use SMW\DIProperty;
 use SMW\SemanticData;
 use SMWDIBlob;
@@ -29,12 +32,31 @@ use SMWDIBlob;
  */
 class ContentAnnotator extends ReplyAnnotator {
 	/**
+	 * @var Parser The current MediaWiki parser
+	 */
+	private Parser $parser;
+
+	/**
+	 * ContentAnnotator constructor.
+	 *
+	 * @param SDReply $reply
+	 */
+	public function __construct( SDReply $reply ) {
+		parent::__construct($reply);
+
+		$this->parser = MediaWikiServices::getInstance()->getParser();
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function addAnnotation( SemanticData $semanticData ): void {
+		$wikitext = $this->reply->getContent();
+		$content = strip_tags( $this->parser->recursiveTagParseFully( $wikitext ) );
+
 		$semanticData->addPropertyObjectValue(
 			new DIProperty( self::getId() ),
-			new SMWDIBlob( $this->reply->getContent() )
+			new SMWDIBlob( $content )
 		);
 	}
 
