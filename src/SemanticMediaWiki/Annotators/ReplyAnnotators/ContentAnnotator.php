@@ -20,8 +20,9 @@
 
 namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators;
 
-use MediaWiki\MediaWikiServices;
-use Parser;
+use ApiMain;
+use DerivativeRequest;
+use RequestContext;
 use SemanticStructuredDiscussions\StructuredDiscussions\SDReply;
 use SMW\DIProperty;
 use SMW\SemanticData;
@@ -32,19 +33,12 @@ use SMWDIBlob;
  */
 class ContentAnnotator extends ReplyAnnotator {
 	/**
-	 * @var Parser The current MediaWiki parser
-	 */
-	private Parser $parser;
-
-	/**
 	 * ContentAnnotator constructor.
 	 *
 	 * @param SDReply $reply
 	 */
 	public function __construct( SDReply $reply ) {
 		parent::__construct($reply);
-
-		$this->parser = MediaWikiServices::getInstance()->getParser();
 	}
 
 	/**
@@ -52,7 +46,7 @@ class ContentAnnotator extends ReplyAnnotator {
 	 */
 	public function addAnnotation( SemanticData $semanticData ): void {
 		$wikitext = $this->reply->getContent();
-		$content = strip_tags( $this->parser->recursiveTagParseFully( $wikitext ) );
+		$content = strip_tags( $this->parse( $wikitext ) );
 
 		$semanticData->addPropertyObjectValue(
 			new DIProperty( self::getId() ),
@@ -84,5 +78,27 @@ class ContentAnnotator extends ReplyAnnotator {
 			'viewable' => true,
 			'annotable' => false
 		];
+	}
+
+	/**
+	 * Parses the given wikitext using the API.
+	 *
+	 * @param string $wikitext
+	 * @return string
+	 */
+	private function parse( string $wikitext ): string {
+		$request = new DerivativeRequest(
+			RequestContext::getMain()->getRequest(),
+			array(
+				'action' => 'parse',
+				'text' => $wikitext,
+				'contentmodel' => 'wikitext'
+			)
+		);
+
+		$api = new ApiMain( $request );
+		$api->execute();
+
+		return $api->getResult()->getResultData()['parse']['text'] ?? $wikitext;
 	}
 }
