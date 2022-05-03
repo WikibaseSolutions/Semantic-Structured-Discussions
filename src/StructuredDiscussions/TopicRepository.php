@@ -36,7 +36,7 @@ class TopicRepository {
 	 * @return SDTopic|null The corresponding Topic, or NULL when the topic does not exist or when something went wrong
 	 */
 	public function getByTitle( Title $title ): ?SDTopic {
-		$parameters = [ 'page' => $title->getFullText(), 'vtformat' => 'wikitext' ];
+		$parameters = [ 'page' => $title->getFullText(), 'vtformat' => 'html' ];
 		$viewTopic = $this->callSubmodule( 'view-topic', $parameters );
 
 		if ( $viewTopic === null ) {

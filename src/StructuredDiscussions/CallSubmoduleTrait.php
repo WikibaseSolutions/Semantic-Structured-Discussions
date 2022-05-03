@@ -21,10 +21,12 @@
 namespace SemanticStructuredDiscussions\StructuredDiscussions;
 
 use ApiMain;
+use DerivativeRequest;
 use Exception;
 use FauxRequest;
 use MediaWiki\Session\SessionManager;
 use MWException;
+use RequestContext;
 
 trait CallSubmoduleTrait {
 	/**
@@ -37,15 +39,10 @@ trait CallSubmoduleTrait {
 	 */
 	private function callSubmodule( string $submodule, array $parameters, bool $wasPosted = false ): ?array {
 		$parameters = [ 'action' => 'flow', 'submodule' => $submodule ] + $parameters;
-		$globalSession = SessionManager::getGlobalSession();
+		$baseRequest = RequestContext::getMain()->getRequest();
+		$derivativeRequest = new DerivativeRequest( $baseRequest, $parameters, $wasPosted );
 
-		try {
-			$fauxRequest = new FauxRequest( $parameters, $wasPosted, $globalSession );
-		} catch ( MWException $exception ) {
-			return null;
-		}
-
-		$module = new ApiMain( $fauxRequest, false );
+		$module = new ApiMain( $derivativeRequest, false );
 
 		try {
 			$module->execute();

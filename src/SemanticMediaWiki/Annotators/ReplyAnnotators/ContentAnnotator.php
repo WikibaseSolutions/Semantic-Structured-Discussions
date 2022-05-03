@@ -45,12 +45,9 @@ class ContentAnnotator extends ReplyAnnotator {
 	 * @inheritDoc
 	 */
 	public function addAnnotation( SemanticData $semanticData ): void {
-		$wikitext = $this->reply->getContent();
-		$content = strip_tags( $this->parse( $wikitext ) );
-
 		$semanticData->addPropertyObjectValue(
 			new DIProperty( self::getId() ),
-			new SMWDIBlob( $content )
+			new SMWDIBlob( $this->reply->getContent() )
 		);
 	}
 
@@ -78,27 +75,5 @@ class ContentAnnotator extends ReplyAnnotator {
 			'viewable' => true,
 			'annotable' => false
 		];
-	}
-
-	/**
-	 * Parses the given wikitext using the API.
-	 *
-	 * @param string $wikitext
-	 * @return string
-	 */
-	private function parse( string $wikitext ): string {
-		$request = new DerivativeRequest(
-			RequestContext::getMain()->getRequest(),
-			array(
-				'action' => 'parse',
-				'text' => $wikitext,
-				'contentmodel' => 'wikitext'
-			)
-		);
-
-		$api = new ApiMain( $request );
-		$api->execute();
-
-		return $api->getResult()->getResultData()['parse']['text'] ?? $wikitext;
 	}
 }

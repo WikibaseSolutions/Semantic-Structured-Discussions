@@ -67,7 +67,13 @@ final class SDTopic {
 	 * @return string|null
 	 */
 	public function getSummary(): ?string {
-		return $this->getRootRevision()['summary']['revision']['content']['content'] ?? null;
+		$rootRevision = $this->getRootRevision();
+
+		if ( isset( $rootRevision['summary']['revision']['content']['content'] ) ) {
+			return strip_tags( $rootRevision['summary']['revision']['content']['content'] );
+		} else {
+			return null;
+		}
 	}
 
 	/**
