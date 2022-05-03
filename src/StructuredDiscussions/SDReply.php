@@ -50,12 +50,12 @@ final class SDReply {
 	}
 
 	/**
-	 * Returns the content of this revision as wikitext.
+	 * Returns the content of this revision with HTML tags stripped.
 	 *
 	 * @return string
 	 */
 	public function getContent(): string {
-		return $this->replyRevision['content']['content'];
+		return strip_tags( $this->replyRevision['content']['content'] );
 	}
 
 	/**
