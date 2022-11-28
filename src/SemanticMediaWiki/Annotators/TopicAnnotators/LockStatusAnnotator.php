@@ -32,10 +32,6 @@ class LockStatusAnnotator extends TopicAnnotator {
 	 * @inheritDoc
 	 */
 	public function addAnnotation( SemanticData $semanticData ): void {
-		if ( $this->topic->getLockStatus() === null ) {
-			return;
-		}
-
 		$semanticData->addPropertyObjectValue(
 			new DIProperty( self::getId() ),
 			new SMWDIBlob( $this->topic->getLockStatus() )
