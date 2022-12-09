@@ -22,7 +22,7 @@ namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnota
 
 use SMW\DIProperty;
 use SMW\SemanticData;
-use SMWDIBlob;
+use SMWDIBoolean;
 
 /**
  * This annotation indicates whether a topic is currently locked (true/false).
