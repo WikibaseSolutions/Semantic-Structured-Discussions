@@ -34,7 +34,7 @@ class LockStatusAnnotator extends TopicAnnotator {
 	public function addAnnotation( SemanticData $semanticData ): void {
 		$semanticData->addPropertyObjectValue(
 			new DIProperty( self::getId() ),
-			new SMWDIBlob( $this->topic->getLockStatus() )
+			new SMWDIBoolean( $this->topic->getLockStatus() )
 		);
 	}
 
@@ -58,7 +58,7 @@ class LockStatusAnnotator extends TopicAnnotator {
 	public static function getDefinition(): array {
 		return [
 			'label' => self::getLabel(),
-			'type' => '_txt',
+			'type' => '_boo',
 			'viewable' => true,
 			'annotable' => false
 		];
