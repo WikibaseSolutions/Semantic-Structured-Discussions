@@ -113,6 +113,15 @@ final class SDTopic {
 	}
 
 	/**
+	 * Returns the topic's current lock state.
+	 *
+	 * @return string
+	 */
+	public function getLockStatus(): bool {
+		return $this->getRootRevision()['isLocked'];		
+	}
+
+	/**
 	 * Returns true if any user that is able to view the topic owner is also able to view this topic.
 	 * This is not always the case, since a topic can be hidden, suppressed or deleted.
 	 *

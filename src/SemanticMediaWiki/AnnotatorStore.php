@@ -26,6 +26,7 @@ use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators\C
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators\ModificationDateAnnotator as ReplyModificationDateAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators\ReplyAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\CreatorAnnotator as TopicCreatorAnnotator;
+use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\LockStatusAnnotator as TopicLockStatusAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\ModificationDateAnnotator as TopicModificationDateAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\OwnerAnnotation as TopicOwnerAnnotation;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\SummaryAnnotator as TopicSummaryAnnotator;
@@ -38,6 +39,7 @@ use SemanticStructuredDiscussions\StructuredDiscussions\SDTopic;
 class AnnotatorStore {
 	private const TOPIC_ANNOTATORS = [
 		TopicCreatorAnnotator::class,
+		TopicLockStatusAnnotator::class,
 		TopicModificationDateAnnotator::class,
 		TopicOwnerAnnotation::class,
 		TopicSummaryAnnotator::class,
