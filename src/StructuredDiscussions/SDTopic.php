@@ -118,7 +118,7 @@ final class SDTopic {
 	 * @return string
 	 */
 	public function getLockStatus(): bool {
-		return $this->getRootRevision()['isLocked'];		
+		return $this->getRootRevision()['isLocked'];
 	}
 
 	/**

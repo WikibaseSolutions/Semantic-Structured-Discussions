@@ -29,6 +29,7 @@ use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\C
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\LockStatusAnnotator as TopicLockStatusAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\ModificationDateAnnotator as TopicModificationDateAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\OwnerAnnotation as TopicOwnerAnnotation;
+use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\OwnerNamespaceAnnotation as TopicOwnerNamespaceAnnotation;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\SummaryAnnotator as TopicSummaryAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\TitleAnnotator as TopicTitleAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\TopicAnnotator;
@@ -42,6 +43,7 @@ class AnnotatorStore {
 		TopicLockStatusAnnotator::class,
 		TopicModificationDateAnnotator::class,
 		TopicOwnerAnnotation::class,
+		TopicOwnerNamespaceAnnotation::class,
 		TopicSummaryAnnotator::class,
 		TopicTitleAnnotator::class
 	];

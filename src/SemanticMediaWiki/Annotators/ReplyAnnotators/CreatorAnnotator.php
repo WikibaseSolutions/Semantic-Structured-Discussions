@@ -60,7 +60,7 @@ class CreatorAnnotator extends ReplyAnnotator {
 			'label' => self::getLabel(),
 			'type' => '_txt',
 			'viewable' => true,
-			'annotable' => false
+			'annotable' => true
 		];
 	}
 }

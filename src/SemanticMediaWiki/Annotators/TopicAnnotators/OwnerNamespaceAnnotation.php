@@ -18,34 +18,43 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators;
+namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators;
 
+use Flow\Exception\CrossWikiException;
+use Flow\Exception\InvalidInputException;
+use MediaWiki\MediaWikiServices;
 use SMW\DIProperty;
 use SMW\SemanticData;
-use SMWDITime;
+use SMWDINumber;
+use Title;
 
 /**
- * This annotation contains information about when a reply was last modified.
+ * This annotation contains information about the title of a topic.
  */
-class ModificationDateAnnotator extends ReplyAnnotator {
+class OwnerNamespaceAnnotation extends TopicAnnotator {
 	/**
 	 * @inheritDoc
 	 */
 	public function addAnnotation( SemanticData $semanticData ): void {
-		$timestamp = $this->reply->getLastModifiedTimestamp();
-		$dataItem = new SMWDITime(
-			SMWDITime::CM_GREGORIAN,
-			$timestamp['year'],
-			$timestamp['month'],
-			$timestamp['day'],
-			$timestamp['hour'],
-			$timestamp['minute'],
-			$timestamp['second']
-		);
+		try {
+			$topicArticle = $this->topic->getTopicOwner();
+		} catch ( CrossWikiException | InvalidInputException $e ) {
+			// Silently ignore specifically these exceptions
+			return;
+		}
+
+		if ( $topicArticle->isTalkPage() ) {
+			// Get the corresponding subject page
+			$topicArticle = MediaWikiServices::getInstance()
+				->getNamespaceInfo()
+				->getSubjectPage( $topicArticle );
+
+			$topicArticle = Title::newFromLinkTarget( $topicArticle );
+		}
 
 		$semanticData->addPropertyObjectValue(
 			new DIProperty( self::getId() ),
-			$dataItem
+			new SMWDINumber( $topicArticle->getNamespace() )
 		);
 	}
 
@@ -53,14 +62,14 @@ class ModificationDateAnnotator extends ReplyAnnotator {
 	 * @inheritDoc
 	 */
 	public static function getId(): string {
-		return '__sd_reply_modification_date';
+		return '__sd_topic_owner_ns';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public static function getLabel(): string {
-		return 'Reply modification date';
+		return 'Topic owner namespace';
 	}
 
 	/**
@@ -69,7 +78,7 @@ class ModificationDateAnnotator extends ReplyAnnotator {
 	public static function getDefinition(): array {
 		return [
 			'label' => self::getLabel(),
-			'type' => '_dat',
+			'type' => '_num',
 			'viewable' => true,
 			'annotable' => true
 		];

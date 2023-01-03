@@ -60,7 +60,7 @@ class TitleAnnotator extends TopicAnnotator {
 			'label' => self::getLabel(),
 			'type' => '_txt',
 			'viewable' => true,
-			'annotable' => false
+			'annotable' => true
 		];
 	}
 }

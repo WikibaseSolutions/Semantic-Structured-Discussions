@@ -22,6 +22,7 @@ namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnota
 
 use Flow\Exception\CrossWikiException;
 use Flow\Exception\InvalidInputException;
+use MediaWiki\MediaWikiServices;
 use SMW\DIProperty;
 use SMW\SemanticData;
 use SMWDIBlob;
@@ -43,8 +44,12 @@ class OwnerAnnotation extends TopicAnnotator {
 		}
 
 		if ( $topicArticle->isTalkPage() ) {
-			// Get the corresponding non-talk page
-			$topicArticle = Title::makeTitleSafe( $topicArticle->getNamespace() - 1, $topicArticle->getText() );
+			// Get the corresponding subject page
+			$topicArticle = MediaWikiServices::getInstance()
+				->getNamespaceInfo()
+				->getSubjectPage( $topicArticle );
+
+			$topicArticle = Title::newFromLinkTarget( $topicArticle );
 		}
 
 		$semanticData->addPropertyObjectValue(
@@ -75,7 +80,7 @@ class OwnerAnnotation extends TopicAnnotator {
 			'label' => self::getLabel(),
 			'type' => '_txt',
 			'viewable' => true,
-			'annotable' => false
+			'annotable' => true
 		];
 	}
 }
