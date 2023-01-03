@@ -23,9 +23,6 @@ namespace SemanticStructuredDiscussions\StructuredDiscussions;
 use ApiMain;
 use DerivativeRequest;
 use Exception;
-use FauxRequest;
-use MediaWiki\Session\SessionManager;
-use MWException;
 use RequestContext;
 
 trait CallSubmoduleTrait {

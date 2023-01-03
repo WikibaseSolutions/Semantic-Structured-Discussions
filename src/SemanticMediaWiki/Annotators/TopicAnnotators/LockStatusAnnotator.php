@@ -60,7 +60,7 @@ class LockStatusAnnotator extends TopicAnnotator {
 			'label' => self::getLabel(),
 			'type' => '_boo',
 			'viewable' => true,
-			'annotable' => false
+			'annotable' => true
 		];
 	}
 }

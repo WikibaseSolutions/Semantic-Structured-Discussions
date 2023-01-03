@@ -71,7 +71,7 @@ class ModificationDateAnnotator extends TopicAnnotator {
 			'label' => self::getLabel(),
 			'type' => '_dat',
 			'viewable' => true,
-			'annotable' => false
+			'annotable' => true
 		];
 	}
 }

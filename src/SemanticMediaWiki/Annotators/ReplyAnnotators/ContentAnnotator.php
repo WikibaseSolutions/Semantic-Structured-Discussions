@@ -20,9 +20,6 @@
 
 namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators;
 
-use ApiMain;
-use DerivativeRequest;
-use RequestContext;
 use SemanticStructuredDiscussions\StructuredDiscussions\SDReply;
 use SMW\DIProperty;
 use SMW\SemanticData;
@@ -38,7 +35,7 @@ class ContentAnnotator extends ReplyAnnotator {
 	 * @param SDReply $reply
 	 */
 	public function __construct( SDReply $reply ) {
-		parent::__construct($reply);
+		parent::__construct( $reply );
 	}
 
 	/**
@@ -73,7 +70,7 @@ class ContentAnnotator extends ReplyAnnotator {
 			'label' => self::getLabel(),
 			'type' => '_txt',
 			'viewable' => true,
-			'annotable' => false
+			'annotable' => true
 		];
 	}
 }
