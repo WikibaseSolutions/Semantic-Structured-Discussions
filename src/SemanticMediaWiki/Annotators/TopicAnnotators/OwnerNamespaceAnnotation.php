@@ -78,7 +78,7 @@ class OwnerNamespaceAnnotation extends TopicAnnotator {
 	public static function getDefinition(): array {
 		return [
 			'label' => self::getLabel(),
-			'type' => '_num',
+			'type' => '_keyw',
 			'viewable' => true,
 			'annotable' => true
 		];
