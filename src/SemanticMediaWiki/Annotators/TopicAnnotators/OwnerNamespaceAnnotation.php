@@ -25,7 +25,7 @@ use Flow\Exception\InvalidInputException;
 use MediaWiki\MediaWikiServices;
 use SMW\DIProperty;
 use SMW\SemanticData;
-use SMWDINumber;
+use SMW\DataValues\KeywordValue;
 use Title;
 
 /**
@@ -52,9 +52,12 @@ class OwnerNamespaceAnnotation extends TopicAnnotator {
 			$topicArticle = Title::newFromLinkTarget( $topicArticle );
 		}
 
+		$value = new KeywordValue();
+		$value->setUserValue( $topicArticle->getNamespace() );
+
 		$semanticData->addPropertyObjectValue(
 			new DIProperty( self::getId() ),
-			new SMWDINumber( $topicArticle->getNamespace() )
+			$value->getDataItem()
 		);
 	}
 
@@ -78,7 +81,7 @@ class OwnerNamespaceAnnotation extends TopicAnnotator {
 	public static function getDefinition(): array {
 		return [
 			'label' => self::getLabel(),
-			'type' => '_num',
+			'type' => '_keyw',
 			'viewable' => true,
 			'annotable' => true
 		];
