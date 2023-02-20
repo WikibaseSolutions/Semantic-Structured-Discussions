@@ -56,17 +56,17 @@ class DataAnnotator {
 		}
 
 		$this->addTopicAnnotations( $topic, $semanticData );
-		$this->addRepliesAnnotations( $topic->getReplies(), $semanticData );
+		$this->addRepliesAnnotations( $topic->getReplies(), $semanticData, $topic );
 	}
 
 	/**
 	 * Add the given replies as subobjects to the given SemanticData object.
 	 *
 	 * @param SDReply[] $replies
-	 * @param Title $title
 	 * @param SemanticData $semanticData
+	 * @param SDTopic $topic
 	 */
-	private function addRepliesAnnotations( array $replies, SemanticData $semanticData ): void {
+	private function addRepliesAnnotations( array $replies, SemanticData $semanticData, SDTopic $topic ): void {
 		foreach ( $replies as $reply ) {
 			if ( !$reply->isEveryoneAllowed() ) {
 				// Do not annotate the reply if it is not viewable by everyone, since this WILL lead to
@@ -77,7 +77,7 @@ class DataAnnotator {
 			$subobject = new Subobject( $semanticData->getSubject()->getTitle() );
 			$subobject->setEmptyContainerForId( sprintf( 'flow-post-%s', $reply->getPostId() ) );
 
-			$this->addReplyAnnotations( $reply, $subobject->getSemanticData() );
+			$this->addReplyAnnotations( $reply, $subobject->getSemanticData(), $topic );
 
 			$semanticData->addSubobject( $subobject );
 		}
@@ -102,9 +102,10 @@ class DataAnnotator {
 	 *
 	 * @param SDReply $reply
 	 * @param SemanticData $semanticData
+	 * @param SDTopic $topic
 	 */
-	private function addReplyAnnotations( SDReply $reply, SemanticData $semanticData ): void {
-		$replyAnnotators = $this->annotatorStore->getReplyAnnotators( $reply );
+	private function addReplyAnnotations( SDReply $reply, SemanticData $semanticData, SDTopic $topic ): void {
+		$replyAnnotators = $this->annotatorStore->getReplyAnnotators( $reply, $topic );
 
 		foreach ( $replyAnnotators as $annotator ) {
 			$annotator->addAnnotation( $semanticData );

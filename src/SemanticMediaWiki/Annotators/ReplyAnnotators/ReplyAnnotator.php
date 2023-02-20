@@ -30,9 +30,16 @@ abstract class ReplyAnnotator implements Annotator {
 	protected SDReply $reply;
 
 	/**
-	 * @param SDReply $reply The reply-information to use for annotating
+	 * @var SDTopic The topic-information to use for annotating
 	 */
-	public function __construct( SDReply $reply ) {
+	protected SDTopic $topic;
+
+	/**
+	 * @param SDReply $reply The reply-information to use for annotating
+	 * @param SDTopic $topic The topic-information to use for annotating
+	 */
+	public function __construct( SDReply $reply, SDTopic $topic ) {
 		$this->reply = $reply;
+		$this->topic = $topic;
 	}
 }

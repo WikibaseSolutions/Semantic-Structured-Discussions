@@ -24,6 +24,8 @@ namespace SemanticStructuredDiscussions\SemanticMediaWiki;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators\ContentAnnotator as ReplyContentAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators\CreatorAnnotator as ReplyCreatorAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators\ModificationDateAnnotator as ReplyModificationDateAnnotator;
+use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators\OwnerAnnotation as ReplyOwnerAnnotation;
+use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators\OwnerNamespaceAnnotation as ReplyOwnerNamespaceAnnotation;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators\ReplyAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\CreatorAnnotator as TopicCreatorAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\LockStatusAnnotator as TopicLockStatusAnnotator;
@@ -51,6 +53,8 @@ class AnnotatorStore {
 	private const REPLY_ANNOTATORS = [
 		ReplyContentAnnotator::class,
 		ReplyCreatorAnnotator::class,
+		ReplyOwnerAnnotation::class,
+		ReplyOwnerNamespaceAnnotation::class,
 		ReplyModificationDateAnnotator::class
 	];
 
