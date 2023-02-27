@@ -83,7 +83,7 @@ class AnnotatorStore {
 	 * @param SDReply $reply The reply to annotate
 	 * @return ReplyAnnotator[]
 	 */
-	public function getReplyAnnotators( SDReply $reply ) {
-		return array_map( fn ( string $class ): ReplyAnnotator => new $class( $reply ), static::REPLY_ANNOTATORS );
+	public function getReplyAnnotators( SDReply $reply, SDTopic $topic ) {
+		return array_map( fn ( string $class ): ReplyAnnotator => new $class( $reply, $topic ), static::REPLY_ANNOTATORS );
 	}
 }

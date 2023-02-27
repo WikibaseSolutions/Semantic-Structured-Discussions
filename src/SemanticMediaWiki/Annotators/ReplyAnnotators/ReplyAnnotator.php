@@ -21,6 +21,7 @@
 namespace SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\ReplyAnnotators;
 
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\Annotator;
+use SemanticStructuredDiscussions\StructuredDiscussions\SDTopic;
 use SemanticStructuredDiscussions\StructuredDiscussions\SDReply;
 
 abstract class ReplyAnnotator implements Annotator {
