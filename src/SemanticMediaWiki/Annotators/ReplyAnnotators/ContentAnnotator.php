@@ -30,15 +30,6 @@ use SMWDIBlob;
  */
 class ContentAnnotator extends ReplyAnnotator {
 	/**
-	 * ContentAnnotator constructor.
-	 *
-	 * @param SDReply $reply
-	 */
-	public function __construct( SDReply $reply ) {
-		parent::__construct( $reply );
-	}
-
-	/**
 	 * @inheritDoc
 	 */
 	public function addAnnotation( SemanticData $semanticData ): void {
