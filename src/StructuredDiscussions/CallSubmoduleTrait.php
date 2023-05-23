@@ -21,9 +21,11 @@
 namespace SemanticStructuredDiscussions\StructuredDiscussions;
 
 use ApiMain;
+use DerivatieContext;
 use DerivativeRequest;
 use Exception;
 use RequestContext;
+use User;
 
 trait CallSubmoduleTrait {
 	/**
