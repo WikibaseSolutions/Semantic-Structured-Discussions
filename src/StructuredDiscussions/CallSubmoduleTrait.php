@@ -21,7 +21,7 @@
 namespace SemanticStructuredDiscussions\StructuredDiscussions;
 
 use ApiMain;
-use DerivatieContext;
+use DerivativeContext;
 use DerivativeRequest;
 use Exception;
 use RequestContext;
