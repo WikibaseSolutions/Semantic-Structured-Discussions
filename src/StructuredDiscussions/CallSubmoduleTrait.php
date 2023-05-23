@@ -37,9 +37,13 @@ trait CallSubmoduleTrait {
 	private function callSubmodule( string $submodule, array $parameters, bool $wasPosted = false ): ?array {
 		$parameters = [ 'action' => 'flow', 'submodule' => $submodule ] + $parameters;
 		$baseRequest = RequestContext::getMain()->getRequest();
+		$derivativeContext = new DerivativeContext( RequestContext::getMain() );
 		$derivativeRequest = new DerivativeRequest( $baseRequest, $parameters, $wasPosted );
+		$derivativeContext->setRequest( $derivativeRequest );
+		// Use system user that can read the api.
+		$derivativeContext->setUser( User::newSystemUser( 'SemanticStructuredDiscussions system user', [ 'steal' => true ] ) );
 
-		$module = new ApiMain( $derivativeRequest, false );
+		$module = new ApiMain( $derivativeContext, false );
 
 		try {
 			$module->execute();
