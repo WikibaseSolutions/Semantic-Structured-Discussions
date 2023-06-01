@@ -24,7 +24,9 @@ use SemanticStructuredDiscussions\StructuredDiscussions\SDReply;
 use SemanticStructuredDiscussions\StructuredDiscussions\SDTopic;
 use SMW\SemanticData;
 use SMW\Subobject;
+use SMW\DIProperty;
 use Title;
+use SMWDIContainer;
 
 /**
  * This class is responsible for annotating the SemanticData object with information about
@@ -74,12 +76,22 @@ class DataAnnotator {
 				continue;
 			}
 
-			$subobject = new Subobject( $semanticData->getSubject()->getTitle() );
-			$subobject->setEmptyContainerForId( sprintf( 'flow-post-%s', $reply->getPostId() ) );
+			$name = sprintf( 'flow-post-%s', $reply->getPostId() );
+			if ( $semanticData->hasSubSemanticData( $name ) ) {
+				$subobjectSemanticData = $semanticData->findSubSemanticData( $name );
+			} else {
+				$subobject = new Subobject( $semanticData->getSubject()->getTitle() );
+				$subobject->setEmptyContainerForId( $name );
+				$subobjectSemanticData = $subobject->getSemanticData();
+			}
 
-			$this->addReplyAnnotations( $reply, $subobject->getSemanticData(), $topic );
+			$this->addReplyAnnotations( $reply, $subobjectSemanticData, $topic );
 
-			$semanticData->addSubobject( $subobject );
+			// See SemanticData::addSubobject
+			$semanticData->addPropertyObjectValue(
+				new DIProperty( DIProperty::TYPE_SUBOBJECT ),
+				new SMWDIContainer( $subobjectSemanticData )
+			);
 		}
 	}
 
