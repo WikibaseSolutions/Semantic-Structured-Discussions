@@ -74,9 +74,19 @@ class DataAnnotator {
 				continue;
 			}
 
-			$subobject = new Subobject( $semanticData->getSubject()->getTitle() );
-			$subobject->setEmptyContainerForId( sprintf( 'flow-post-%s', $reply->getPostId() ) );
+			$id = sprintf( 'flow-post-%s', $reply->getPostId() );
 
+			// Create a new subobject to hold the semantic data
+			$subobject = new Subobject( $semanticData->getSubject()->getTitle() );
+			$subobject->setEmptyContainerForId( $id );
+
+			$existingData = $semanticData->findSubSemanticData( $id );
+			if ( $existingData !== null ) {
+				// Import any existing data into the subobject, so that we do not override that
+				$subobject->getSemanticData()->importDataFrom( $existingData );
+			}
+
+			// Override or add the new reply annotations
 			$this->addReplyAnnotations( $reply, $subobject->getSemanticData(), $topic );
 
 			$semanticData->addSubobject( $subobject );
