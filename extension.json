@@ -34,6 +34,7 @@
 	],
 	"Hooks": {
 		"APIFlowAfterExecute": "SemanticStructuredDiscussions\\Hooks::onAPIFlowAfterExecute",
+		"UserGetReservedNames": "SemanticStructuredDiscussions\\Hooks::onUserGetReservedNames",
 		"SMW::Property::initProperties": "SemanticStructuredDiscussions\\Hooks::onInitProperties",
 		"SMW::Store::BeforeDataUpdateComplete": "SemanticStructuredDiscussions\\Hooks::onBeforeDataUpdateComplete"
 	},

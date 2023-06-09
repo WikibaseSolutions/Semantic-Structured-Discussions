@@ -113,4 +113,8 @@ final class Hooks {
 		$dataRebuilder->setOptions( new Options( [ 'page' => $page ] ) );
 		$dataRebuilder->rebuild();
 	}
+
+	public static function onUserGetReservedNames( &$reservedUsernames ): void {
+		$reservedUsernames []= 'SemanticStructuredDiscussions system user';
+	}
 }
