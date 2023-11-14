@@ -50,9 +50,10 @@ class DataAnnotator {
 	 * @param SemanticData $semanticData The SemanticData object to add the annotations to
 	 */
 	public function addAnnotations( SDTopic $topic, SemanticData $semanticData ): void {
-		if ( !$topic->isEveryoneAllowed() || !$topic->getTopicOwner()->exists() ) {
+		$owner = $topic->getTopicOwner();
+		if ( !$topic->isEveryoneAllowed() || !$owner->exists() || !$owner->getSubjectPage()->exists() ) {
 			// Do not annotate the topic if it is not viewable by everyone, since this WILL lead to information leakage
-			// Do not annotate if parent page does not exist; the topic should then be removed as well
+			// Do not annotate if parent page (subject or talk) does not exist; the topic should then be removed as well
 			return;
 		}
 
