@@ -1,6 +1,8 @@
 <?php
 
-namespace SemanticStructuredDiscussions/SemanticMediaWiki/Hooks;
+namespace SemanticStructuredDiscussions\SemanticMediaWiki\Hooks;
+
+use MediaWiki\HookContainer\HookContainer;
 
 class HookRunner implements
 	SemanticStructuredDiscussionsGetReplyAnnotatorList,

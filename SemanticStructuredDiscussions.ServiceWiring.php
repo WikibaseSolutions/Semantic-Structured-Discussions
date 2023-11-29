@@ -48,11 +48,11 @@ return [
 	 *
 	 * @return HookRunner The HookRunner singleton
 	 */
-	'SemanticStructuredDiscussionsSemanticMediaWiki.Hooks.HookRunner' => static function (
-		HookContainer $container
+	'SemanticStructuredDiscussions.SemanticMediaWiki.Hooks.HookRunner' => static function (
+		MediaWikiServices $services
 	): HookRunner {
-		return new HookRunner( $container );
-	}
+		return new HookRunner( $services->getHookContainer() );
+	},
 	/**
 	 * Instantiator function for the DataAnnotator singleton.
 	 *

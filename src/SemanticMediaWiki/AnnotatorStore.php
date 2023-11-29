@@ -96,7 +96,7 @@ class AnnotatorStore {
 	 * @param SDReply $reply The reply to annotate
 	 * @return ReplyAnnotator[]
 	 */
-	private function getReplyAnnotators( SDReply $reply, SDTopic $topic ) {
+	public function getReplyAnnotators( SDReply $reply, SDTopic $topic ) {
 		return array_map( fn ( string $class ): ReplyAnnotator => new $class( $reply, $topic ), $this->getReplyAnnotatorList() );
 	}
 
@@ -131,6 +131,6 @@ class AnnotatorStore {
 			$this->replyAnnotatorList = $list;
 		}
 
-		return $this->replyAnotatorList;
+		return $this->replyAnnotatorList;
 	}
 }
