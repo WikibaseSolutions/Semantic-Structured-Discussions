@@ -58,7 +58,7 @@ final class Hooks {
 	 * @link https://github.com/SemanticMediaWiki/SemanticMediaWiki/blob/master/docs/examples/hook.property.initproperties.md
 	 */
 	public static function onInitProperties( PropertyRegistry $propertyRegistry ): void {
-		$propertyInitializer = new PropertyInitializer( $propertyRegistry );
+		$propertyInitializer = new PropertyInitializer( $propertyRegistry, Services::getAnnotatorStore() );
 		$propertyInitializer->initializeProperties();
 	}
 

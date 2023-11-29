@@ -35,6 +35,7 @@ use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\O
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\SummaryAnnotator as TopicSummaryAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\TitleAnnotator as TopicTitleAnnotator;
 use SemanticStructuredDiscussions\SemanticMediaWiki\Annotators\TopicAnnotators\TopicAnnotator;
+use SemanticStructuredDiscussions\SemanticMediaWiki\Hooks\HookRunner;
 use SemanticStructuredDiscussions\StructuredDiscussions\SDReply;
 use SemanticStructuredDiscussions\StructuredDiscussions\SDTopic;
 // @codingStandardsIgnoreEnd
@@ -58,13 +59,25 @@ class AnnotatorStore {
 		ReplyModificationDateAnnotator::class
 	];
 
+	private $topicAnnotatorList = [];
+	private $replyAnnotatorList = [];
+
+	/**
+	 * Runner for hooks
+	 */
+	private HookRunner $hookRunner;
+
+	public function __construct( HookRunner $hookRunner ) {
+		$this->hookRunner = $hookRunner;
+	}
+
 	/**
 	 * Returns a list of class names of the available annotators.
 	 *
 	 * @return string[] class-string<Annotator> Class names of Annotator classes
 	 */
-	public static function getAnnotators(): array {
-		return array_merge( self::TOPIC_ANNOTATORS, self::REPLY_ANNOTATORS );
+	public function getAnnotators(): array {
+		return array_merge( $this->getTopicAnnotatorList(), $this->getReplyAnnotatorList() );
 	}
 
 	/**
@@ -74,7 +87,7 @@ class AnnotatorStore {
 	 * @return TopicAnnotator[]
 	 */
 	public function getTopicAnnotators( SDTopic $topic ): array {
-		return array_map( fn ( string $class ): TopicAnnotator => new $class( $topic ), static::TOPIC_ANNOTATORS );
+		return array_map( fn ( string $class ): TopicAnnotator => new $class( $topic ), $this->getTopicAnnotatorList() );
 	}
 
 	/**
@@ -83,7 +96,41 @@ class AnnotatorStore {
 	 * @param SDReply $reply The reply to annotate
 	 * @return ReplyAnnotator[]
 	 */
-	public function getReplyAnnotators( SDReply $reply, SDTopic $topic ) {
-		return array_map( fn ( string $class ): ReplyAnnotator => new $class( $reply, $topic ), static::REPLY_ANNOTATORS );
+	private function getReplyAnnotators( SDReply $reply, SDTopic $topic ) {
+		return array_map( fn ( string $class ): ReplyAnnotator => new $class( $reply, $topic ), $this->getReplyAnnotatorList() );
+	}
+
+	/**
+	 * Get all the topic annotators, including ones defined in hooks
+	 *
+	 * @return string[] Class names of all topic annotators
+	 */
+	private function getTopicAnnotatorList(): array {
+		if ( empty( $this->topicAnnotatorList ) ) {
+			$list = self::TOPIC_ANNOTATORS;
+
+			$this->hookRunner->onSemanticStructuredDiscussionsGetTopicAnnotatorList( $list );
+
+			$this->topicAnnotatorList = $list;
+		}
+
+		return $this->topicAnnotatorList;
+	}
+
+	/**
+	 * Get all the reply annotators, including ones defined in hooks
+	 *
+	 * @return string[] Class names of all reply annotators
+	 */
+	public function getReplyAnnotatorList(): array {
+		if ( empty( $this->replyAnnotatorList ) ) {
+			$list = self::REPLY_ANNOTATORS;
+
+			$this->hookRunner->onSemanticStructuredDiscussionsGetReplyAnnotatorList( $list );
+
+			$this->replyAnnotatorList = $list;
+		}
+
+		return $this->replyAnotatorList;
 	}
 }

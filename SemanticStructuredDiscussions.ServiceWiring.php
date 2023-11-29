@@ -21,6 +21,7 @@
 use MediaWiki\MediaWikiServices;
 use SemanticStructuredDiscussions\SemanticMediaWiki\AnnotatorStore;
 use SemanticStructuredDiscussions\SemanticMediaWiki\DataAnnotator;
+use SemanticStructuredDiscussions\SemanticMediaWiki\Hooks\HookRunner;
 use SemanticStructuredDiscussions\Services;
 use SemanticStructuredDiscussions\StructuredDiscussions\TopicRepository;
 
@@ -37,9 +38,21 @@ return [
 	 *
 	 * @return AnnotatorStore The AnnotatorStore singleton
 	 */
-	'SemanticStructuredDiscussions.SemanticMediaWiki.AnnotatorStore' => static function (): AnnotatorStore {
-		return new AnnotatorStore();
+	'SemanticStructuredDiscussions.SemanticMediaWiki.AnnotatorStore' => static function (
+		MediaWikiServices $services
+	): AnnotatorStore {
+		return new AnnotatorStore( Services::getSMWHookRunner( $services ) );
 	},
+	/**
+	 * Instantiator function for the HookRunner singleton.
+	 *
+	 * @return HookRunner The HookRunner singleton
+	 */
+	'SemanticStructuredDiscussionsSemanticMediaWiki.Hooks.HookRunner' => static function (
+		HookContainer $container
+	): HookRunner {
+		return new HookRunner( $container );
+	}
 	/**
 	 * Instantiator function for the DataAnnotator singleton.
 	 *
