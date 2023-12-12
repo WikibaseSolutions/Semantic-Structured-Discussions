@@ -31,11 +31,14 @@ class PropertyInitializer {
 	 */
 	private PropertyRegistry $propertyRegistry;
 
+	private AnnotatorStore $annotatorStore;
+
 	/**
 	 * @param PropertyRegistry $propertyRegistry The PropertyRegistry in which to initialise the predefined properties
 	 */
-	public function __construct( PropertyRegistry $propertyRegistry ) {
+	public function __construct( PropertyRegistry $propertyRegistry, AnnotatorStore $annotatorStore ) {
 		$this->propertyRegistry = $propertyRegistry;
+		$this->annotatorStore = $annotatorStore;
 	}
 
 	/**
@@ -84,7 +87,7 @@ class PropertyInitializer {
 	 */
 	private function getPropertyDefinitions(): array {
 		$definitions = [];
-		$annotations = AnnotatorStore::getAnnotators();
+		$annotations = $this->annotatorStore->getAnnotators();
 
 		foreach ( $annotations as $annotation ) {
 			$definitions[$annotation::getId()] = $annotation::getDefinition();

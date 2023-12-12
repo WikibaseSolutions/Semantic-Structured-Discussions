@@ -23,6 +23,7 @@ namespace SemanticStructuredDiscussions;
 use MediaWiki\MediaWikiServices;
 use SemanticStructuredDiscussions\SemanticMediaWiki\AnnotatorStore;
 use SemanticStructuredDiscussions\SemanticMediaWiki\DataAnnotator;
+use SemanticStructuredDiscussions\SemanticMediaWiki\Hooks\HookRunner;
 use SemanticStructuredDiscussions\StructuredDiscussions\TopicRepository;
 use Wikimedia\Services\ServiceContainer;
 
@@ -50,6 +51,19 @@ final class Services {
 	public static function getAnnotatorStore( ?ServiceContainer $services = null ): AnnotatorStore {
 		return ( $services ?? MediaWikiServices::getInstance() )
 			->getService( 'SemanticStructuredDiscussions.SemanticMediaWiki.AnnotatorStore' );
+	}
+
+	/**
+	 * Get the HookRunner singleton
+	 *
+	 * This hookRunner runs custom SMW-related hooks.
+	 *
+	 * @param ServiceContainer|null $services
+	 * @return HookRunner
+	 */
+	public static function getSMWHookRunner( ?ServiceContainer $services = null ): HookRunner {
+		return ( $services ?? MediaWikiServices::getInstance() )
+			->getService( 'SemanticStructuredDiscussions.SemanticMediaWiki.Hooks.HookRunner' );
 	}
 
 	/**
