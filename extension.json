@@ -23,12 +23,6 @@
 			"i18n"
 		]
 	},
-	"config": {
-		"SemanticStructuredDiscussionsRebuildOnPageChange": {
-			"value": false,
-			"description": "Should the corresponding topic namespace be rebuild when the owner page has changed?"
-		}
-	},
 	"AutoloadNamespaces": {
 		"SemanticStructuredDiscussions\\": "src/"
 	},
