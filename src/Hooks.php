@@ -86,6 +86,24 @@ final class Hooks {
 		Services::getDataAnnotator()->addAnnotations( $topic, $semanticData );
 	}
 
+	public static function onAfterDataUpdateComplete( Store $store, SemanticData $semanticData ): void {
+		$title = $semanticData->getSubject()->getTitle();
+
+		if ( $title === null ) {
+			return;
+		}
+
+		$topics = Services::getTopicRepository()->getByOwner( $title );
+
+		if ( empty( $topics ) ) {
+			return;
+		}
+
+		foreach ( $topics as $topic ) {
+			self::rebuildForPage( $topic->getTopicTitle()->getPrefixedText() );
+		}
+	}
+
 	/**
 	 * Called after a Flow API module has been executed.
 	 *
@@ -106,14 +124,29 @@ final class Hooks {
 			return;
 		}
 
+		self::rebuildForPage( $page );
+	}
+
+	/**
+	 * This method is used to (forcefully) update the semantic index after a write has been performed by Flow/SD.
+	 *
+	 * @param string $pageName The page to rebuild
+	 * @return void
+	 */
+	private static function rebuildForPage( string $pageName ): void {
 		$store = StoreFactory::getStore();
 		$store->setOption( Store::OPT_CREATE_UPDATE_JOB, false );
 
 		$dataRebuilder = new DataRebuilder( $store, ServicesFactory::getInstance()->newTitleFactory() );
-		$dataRebuilder->setOptions( new Options( [ 'page' => $page ] ) );
+		$dataRebuilder->setOptions( new Options( [ 'page' => $pageName ] ) );
 		$dataRebuilder->rebuild();
 	}
 
+	/**
+	 * This method is used to reserve the usernames of the system user(s) used by this extension
+	 *
+	 * @link onUserGetReservedNames
+	 */
 	public static function onUserGetReservedNames( &$reservedUsernames ): void {
 		$reservedUsernames []= 'SemanticStructuredDiscussions system user';
 	}

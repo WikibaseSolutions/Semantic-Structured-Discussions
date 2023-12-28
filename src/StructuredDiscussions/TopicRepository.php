@@ -49,4 +49,28 @@ class TopicRepository {
 
 		return new SDTopic( $viewTopic['topic'] );
 	}
+
+	public function getByOwner( Title $title ): array {
+		$parameters = [ 'page' => $title->getTalkPage()->getFullText() ];
+		$topics = $this->callSubmodule( 'view-topiclist', $parameters );
+
+		$rtr = [];
+
+		if ( $topics === null ) {
+			return $rtr;
+		}
+
+		if ( !isset( $topics['topiclist'] ) ) {
+			return $rtr;
+		}
+
+		foreach ( $topics[ 'topiclist' ][ 'roots' ] as $root ) {
+			$copy = $topics[ 'topiclist' ];
+			$copy[ 'roots' ] = [ $root ];
+
+			$rtr []= new SDTopic( $copy );
+		}
+
+		return $rtr;
+	}
 }

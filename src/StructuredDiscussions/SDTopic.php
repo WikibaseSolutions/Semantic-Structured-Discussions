@@ -162,6 +162,10 @@ final class SDTopic {
 		return $this->associatedTitle;
 	}
 
+	public function getTopicTitle(): Title {
+		return Title::makeTitleSafe( NS_TOPIC, $this->getRootPostId() );
+	}
+
 	/**
 	 * Returns the workflow of this topic.
 	 *
