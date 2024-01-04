@@ -10,6 +10,50 @@ Semantic Versioning [1].
 UNRELEASED
 ----------
 
+1.8.0 - 05-01-2024
+------------------
+
+Changed:
+- No annotations on pages with nonexistent owners
+- Rebuild topic pages on SMW::Store::AfterDataUpdateComplete of owner/parent
+
+Added:
+- Two new hooks: SemanticStructuredDiscussionsGetReplyAnnotatorList and SemanticStructuredDiscussionsGetTopicAnnotatorList
+- SemanticStructuredDiscussions\SemanticMediaWiki\Hooks\HookRunner class
+- Added TopicRepository::getByOwner method
+
+1.7.1 - 09-06-2023
+------------------
+
+Added:
+- System user is reserved user name now
+- Use system user to call the API, to prevent permission errors
+- If data set for reply subobjects, do not overwrite it.
+
+1.7.0 - 20-02-2023
+------------------
+
+Added:
+- Add Owner information of topics also to replies
+
+1.6.0 - 27-01-2023
+------------------
+
+Changed:
+- Change datatype of OwnerNamespaceAnnotation to _keyw from _num
+
+
+1.5.0 - 03-01-2023
+------------------
+
+Added:
+- Owner namespace property
+
+Fixed:
+- Call the correct class in LockStatusAnnotator (SMWDIBoolean)
+
+Changed:
+- Make properties annotable
 
 1.4.0 - 09-12-2022
 ------------------
