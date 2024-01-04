@@ -51,19 +51,23 @@ class TopicRepository {
 	}
 
 	public function getByOwner( Title $title ): array {
-		$parameters = [ 'page' => $title->getTalkPage()->getFullText() ];
+		$talkPage = $title->getTalkPageIfDefined();
+		if ( !$talkPage ) {
+			return [];
+		}
+
+		$parameters = [ 'page' => $talkPage->getFullText() ];
 		$topics = $this->callSubmodule( 'view-topiclist', $parameters );
 
-		$rtr = [];
-
 		if ( $topics === null ) {
-			return $rtr;
+			return [];
 		}
 
 		if ( !isset( $topics['topiclist'] ) ) {
-			return $rtr;
+			return [];
 		}
 
+		$rtr = [];
 		foreach ( $topics[ 'topiclist' ][ 'roots' ] as $root ) {
 			$copy = $topics[ 'topiclist' ];
 			$copy[ 'roots' ] = [ $root ];

@@ -86,6 +86,14 @@ final class Hooks {
 		Services::getDataAnnotator()->addAnnotations( $topic, $semanticData );
 	}
 
+	/**
+	 * Hook to process information after an update has been completed.
+	 *
+	 * @param Store $store
+	 * @param SemanticData $semanticData
+	 * @return void
+	 * @link https://github.com/SemanticMediaWiki/SemanticMediaWiki/blob/master/docs/technical/hooks/hook.store.afterdataupdatecomplete.md
+	 */
 	public static function onAfterDataUpdateComplete( Store $store, SemanticData $semanticData ): void {
 		$title = $semanticData->getSubject()->getTitle();
 
@@ -100,7 +108,10 @@ final class Hooks {
 		}
 
 		foreach ( $topics as $topic ) {
-			self::rebuildForPage( $topic->getTopicTitle()->getPrefixedText() );
+			$title = $topic->getTopicTitle();
+			if ( $title ) {
+				self::rebuildForPage( $title );
+			}
 		}
 	}
 
@@ -145,7 +156,7 @@ final class Hooks {
 	/**
 	 * This method is used to reserve the usernames of the system user(s) used by this extension
 	 *
-	 * @link onUserGetReservedNames
+	 * @link https://www.mediawiki.org/wiki/Manual:Hooks/UserGetReservedNames
 	 */
 	public static function onUserGetReservedNames( &$reservedUsernames ): void {
 		$reservedUsernames []= 'SemanticStructuredDiscussions system user';
