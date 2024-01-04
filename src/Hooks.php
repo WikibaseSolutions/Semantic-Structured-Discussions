@@ -87,6 +87,35 @@ final class Hooks {
 	}
 
 	/**
+	 * Hook to process information after an update has been completed.
+	 *
+	 * @param Store $store
+	 * @param SemanticData $semanticData
+	 * @return void
+	 * @link https://github.com/SemanticMediaWiki/SemanticMediaWiki/blob/master/docs/technical/hooks/hook.store.afterdataupdatecomplete.md
+	 */
+	public static function onAfterDataUpdateComplete( Store $store, SemanticData $semanticData ): void {
+		$title = $semanticData->getSubject()->getTitle();
+
+		if ( $title === null ) {
+			return;
+		}
+
+		$topics = Services::getTopicRepository()->getByOwner( $title );
+
+		if ( empty( $topics ) ) {
+			return;
+		}
+
+		foreach ( $topics as $topic ) {
+			$title = $topic->getTopicTitle();
+			if ( $title ) {
+				self::rebuildForPage( $title );
+			}
+		}
+	}
+
+	/**
 	 * Called after a Flow API module has been executed.
 	 *
 	 * This hook is used to (forcefully) update the semantic index after a write has been performed by Flow/SD.
@@ -106,14 +135,29 @@ final class Hooks {
 			return;
 		}
 
+		self::rebuildForPage( $page );
+	}
+
+	/**
+	 * This method is used to (forcefully) update the semantic index after a write has been performed by Flow/SD.
+	 *
+	 * @param string $pageName The page to rebuild
+	 * @return void
+	 */
+	private static function rebuildForPage( string $pageName ): void {
 		$store = StoreFactory::getStore();
 		$store->setOption( Store::OPT_CREATE_UPDATE_JOB, false );
 
 		$dataRebuilder = new DataRebuilder( $store, ServicesFactory::getInstance()->newTitleFactory() );
-		$dataRebuilder->setOptions( new Options( [ 'page' => $page ] ) );
+		$dataRebuilder->setOptions( new Options( [ 'page' => $pageName ] ) );
 		$dataRebuilder->rebuild();
 	}
 
+	/**
+	 * This method is used to reserve the usernames of the system user(s) used by this extension
+	 *
+	 * @link https://www.mediawiki.org/wiki/Manual:Hooks/UserGetReservedNames
+	 */
 	public static function onUserGetReservedNames( &$reservedUsernames ): void {
 		$reservedUsernames []= 'SemanticStructuredDiscussions system user';
 	}

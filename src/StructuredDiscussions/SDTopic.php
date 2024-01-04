@@ -163,6 +163,17 @@ final class SDTopic {
 	}
 
 	/**
+	 * Returns the title of this topic.
+	 * This is the title of the "Topic page", where you get with the "permalink" button on replies.
+	 * This is different from the TopicOwner title, because that is the title of the board to which this topic belongs.
+	 *
+	 * @return Title|null Title of the topic if valid. Null if invalid (e.g. if rootPostId is empty)
+	 */
+	public function getTopicTitle(): ?Title {
+		return Title::makeTitleSafe( NS_TOPIC, $this->getRootPostId() );
+	}
+
+	/**
 	 * Returns the workflow of this topic.
 	 *
 	 * @return Workflow

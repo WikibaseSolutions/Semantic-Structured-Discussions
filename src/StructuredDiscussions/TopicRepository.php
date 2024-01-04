@@ -49,4 +49,32 @@ class TopicRepository {
 
 		return new SDTopic( $viewTopic['topic'] );
 	}
+
+	public function getByOwner( Title $title ): array {
+		$talkPage = $title->getTalkPageIfDefined();
+		if ( !$talkPage ) {
+			return [];
+		}
+
+		$parameters = [ 'page' => $talkPage->getFullText() ];
+		$topics = $this->callSubmodule( 'view-topiclist', $parameters );
+
+		if ( $topics === null ) {
+			return [];
+		}
+
+		if ( !isset( $topics['topiclist'] ) ) {
+			return [];
+		}
+
+		$rtr = [];
+		foreach ( $topics[ 'topiclist' ][ 'roots' ] as $root ) {
+			$copy = $topics[ 'topiclist' ];
+			$copy[ 'roots' ] = [ $root ];
+
+			$rtr []= new SDTopic( $copy );
+		}
+
+		return $rtr;
+	}
 }
