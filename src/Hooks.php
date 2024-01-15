@@ -110,7 +110,7 @@ final class Hooks {
 		foreach ( $topics as $topic ) {
 			$title = $topic->getTopicTitle();
 			if ( $title ) {
-				self::rebuildForPage( $title );
+				self::rebuildForPage( $title->getPrefixedText() );
 			}
 		}
 	}
