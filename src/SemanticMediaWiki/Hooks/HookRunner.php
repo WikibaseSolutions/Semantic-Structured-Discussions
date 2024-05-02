@@ -3,10 +3,14 @@
 namespace SemanticStructuredDiscussions\SemanticMediaWiki\Hooks;
 
 use MediaWiki\HookContainer\HookContainer;
+use SemanticStructuredDiscussions\StructuredDiscussions\SDReply;
+use SemanticStructuredDiscussions\StructuredDiscussions\SDTopic;
+use SMW\SemanticData;
 
 class HookRunner implements
 	SemanticStructuredDiscussionsGetReplyAnnotatorList,
-	SemanticStructuredDiscussionsGetTopicAnnotatorList
+	SemanticStructuredDiscussionsGetTopicAnnotatorList,
+	SemanticStructuredDiscussionsShouldSaveReply
 {
 	private HookContainer $container;
 
@@ -28,5 +32,12 @@ class HookRunner implements
 			'SemanticStructuredDiscussionsGetTopicAnnotatorList',
 			[ &$list ]
 		);
+	}
+
+	public function onSemanticStructuredDiscussionsShouldSaveReply(  bool &$shouldSaveReply,string $id, int $index, SDReply $reply, SemanticData $semanticData, SDTopic $topic ): void
+	{
+		$this->container->run('SemanticStructuredDiscussionsShouldSaveReply',
+		[ &$shouldSaveReply, $id, $index, $reply, $semanticData, $topic]
+	);
 	}
 }
