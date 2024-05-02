@@ -61,7 +61,7 @@ return [
 	'SemanticStructuredDiscussions.SemanticMediaWiki.DataAnnotator' => static function (
 		MediaWikiServices $services
 	): DataAnnotator {
-		return new DataAnnotator( Services::getAnnotatorStore( $services ) );
+		return new DataAnnotator( Services::getAnnotatorStore( $services ), Services::getSMWHookRunner( $services ) );
 	},
 	/**
 	 * Instantiator function for the TopicRepository singleton.

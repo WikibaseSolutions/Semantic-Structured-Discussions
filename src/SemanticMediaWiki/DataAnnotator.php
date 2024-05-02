@@ -20,6 +20,7 @@
 
 namespace SemanticStructuredDiscussions\SemanticMediaWiki;
 
+use SemanticStructuredDiscussions\SemanticMediaWiki\Hooks\HookRunner;
 use SemanticStructuredDiscussions\StructuredDiscussions\SDReply;
 use SemanticStructuredDiscussions\StructuredDiscussions\SDTopic;
 use SMW\SemanticData;
@@ -37,10 +38,16 @@ class DataAnnotator {
 	private AnnotatorStore $annotatorStore;
 
 	/**
+	 * @var HookRunner
+	 */
+	private HookRunner $hookRunner;
+
+	/**
 	 * @param AnnotatorStore $annotatorStore
 	 */
-	public function __construct( AnnotatorStore $annotatorStore ) {
+	public function __construct( AnnotatorStore $annotatorStore, HookRunner $hookRunner ) {
 		$this->annotatorStore = $annotatorStore;
+		$this->hookRunner = $hookRunner;
 	}
 
 	/**
@@ -69,14 +76,28 @@ class DataAnnotator {
 	 * @param SDTopic $topic
 	 */
 	private function addRepliesAnnotations( array $replies, SemanticData $semanticData, SDTopic $topic ): void {
-		foreach ( $replies as $reply ) {
+		foreach ( $replies as $index => $reply ) {
 			if ( !$reply->isEveryoneAllowed() ) {
 				// Do not annotate the reply if it is not viewable by everyone, since this WILL lead to
 				// information leakage
 				continue;
 			}
-
 			$id = sprintf( 'flow-post-%s', $reply->getPostId() );
+
+			// check if the reply should be saved for searchresults
+			$shouldSaveReply = true;
+			$this->hookRunner->onSemanticStructuredDiscussionsShouldSaveReply(
+				$shouldSaveReply,
+				$id,
+				$index,
+				$reply,
+				$semanticData,
+				$topic
+			);
+			if ( !$shouldSaveReply ) {
+				continue;
+			}
+
 
 			// Create a new subobject to hold the semantic data
 			$subobject = new Subobject( $semanticData->getSubject()->getTitle() );
