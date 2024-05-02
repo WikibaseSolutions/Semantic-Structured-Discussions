@@ -20,6 +20,7 @@
 
 namespace SemanticStructuredDiscussions\SemanticMediaWiki;
 
+use SemanticStructuredDiscussions\SemanticMediaWiki\Hooks\HookRunner;
 use SemanticStructuredDiscussions\StructuredDiscussions\SDReply;
 use SemanticStructuredDiscussions\StructuredDiscussions\SDTopic;
 use SMW\SemanticData;
@@ -37,10 +38,16 @@ class DataAnnotator {
 	private AnnotatorStore $annotatorStore;
 
 	/**
+	 * @var HookRunner
+	 */
+	private HookRunner $hookRunner;
+
+	/**
 	 * @param AnnotatorStore $annotatorStore
 	 */
-	public function __construct( AnnotatorStore $annotatorStore ) {
+	public function __construct( AnnotatorStore $annotatorStore, HookRunner $hookRunner ) {
 		$this->annotatorStore = $annotatorStore;
+		$this->hookRunner = $hookRunner;
 	}
 
 	/**
@@ -79,7 +86,7 @@ class DataAnnotator {
 
 			// check if the reply should be saved for searchresults
 			$shouldSaveReply = true;
-			$this->annotatorStore->hookRunner->onSemanticStructuredDiscussionsShouldSaveReply(
+			$this->hookRunner->onSemanticStructuredDiscussionsShouldSaveReply(
 				$shouldSaveReply,
 				$id,
 				$index,

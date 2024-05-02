@@ -65,7 +65,7 @@ class AnnotatorStore {
 	/**
 	 * Runner for hooks
 	 */
-	public HookRunner $hookRunner;
+	private HookRunner $hookRunner;
 
 	public function __construct( HookRunner $hookRunner ) {
 		$this->hookRunner = $hookRunner;
