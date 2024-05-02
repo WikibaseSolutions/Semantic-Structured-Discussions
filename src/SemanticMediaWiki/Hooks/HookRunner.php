@@ -34,10 +34,17 @@ class HookRunner implements
 		);
 	}
 
-	public function onSemanticStructuredDiscussionsShouldSaveReply(  bool &$shouldSaveReply,string $id, int $index, SDReply $reply, SemanticData $semanticData, SDTopic $topic ): void
-	{
-		$this->container->run('SemanticStructuredDiscussionsShouldSaveReply',
-		[ &$shouldSaveReply, $id, $index, $reply, $semanticData, $topic]
-	);
+	public function onSemanticStructuredDiscussionsShouldSaveReply(
+		bool &$shouldSaveReply,
+		string $id,
+		int $index,
+		SDReply $reply,
+		SemanticData $semanticData,
+		SDTopic $topic
+	): void {
+		$this->container->run(
+			'SemanticStructuredDiscussionsShouldSaveReply',
+			[ &$shouldSaveReply, $id, $index, $reply, $semanticData, $topic ]
+		);
 	}
 }

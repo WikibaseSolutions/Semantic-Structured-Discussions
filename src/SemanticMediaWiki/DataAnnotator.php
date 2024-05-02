@@ -76,10 +76,18 @@ class DataAnnotator {
 				continue;
 			}
 			$id = sprintf( 'flow-post-%s', $reply->getPostId() );
-			//check if the reply should be saved for searchresults
+
+			// check if the reply should be saved for searchresults
 			$shouldSaveReply = true;
-			$this->annotatorStore->hookRunner->onSemanticStructuredDiscussionsShouldSaveReply($shouldSaveReply, $id, $index, $reply, $semanticData, $topic); 
-			if(!$shouldSaveReply){
+			$this->annotatorStore->hookRunner->onSemanticStructuredDiscussionsShouldSaveReply(
+				$shouldSaveReply,
+				$id,
+				$index,
+				$reply,
+				$semanticData,
+				$topic
+			);
+			if ( !$shouldSaveReply ) {
 				continue;
 			}
 
