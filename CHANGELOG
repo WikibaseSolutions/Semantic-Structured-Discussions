@@ -10,6 +10,11 @@ Semantic Versioning [1].
 UNRELEASED
 ----------
 
+1.9.0 - 08-05-2024
+------------------
+Added:
+- Hook SemanticStructuredDiscussionsShouldSaveReply
+
 1.8.1 - 15-01-2024
 ------------------
 
