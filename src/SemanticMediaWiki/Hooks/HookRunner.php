@@ -10,7 +10,7 @@ use SMW\SemanticData;
 class HookRunner implements
 	SemanticStructuredDiscussionsGetReplyAnnotatorList,
 	SemanticStructuredDiscussionsGetTopicAnnotatorList,
-	SemanticStructuredDiscussionsShouldSaveReply
+	SemanticStructuredDiscussionsShouldSaveReply,
 	SemanticStructuredDiscussionsShouldSaveTopicAnnotations
 {
 	private HookContainer $container;
