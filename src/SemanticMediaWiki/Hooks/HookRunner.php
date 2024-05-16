@@ -10,7 +10,8 @@ use SMW\SemanticData;
 class HookRunner implements
 	SemanticStructuredDiscussionsGetReplyAnnotatorList,
 	SemanticStructuredDiscussionsGetTopicAnnotatorList,
-	SemanticStructuredDiscussionsShouldSaveReply
+	SemanticStructuredDiscussionsShouldSaveReply,
+	SemanticStructuredDiscussionsShouldSaveTopicAnnotations
 {
 	private HookContainer $container;
 
@@ -45,6 +46,17 @@ class HookRunner implements
 		$this->container->run(
 			'SemanticStructuredDiscussionsShouldSaveReply',
 			[ &$shouldSaveReply, $id, $index, $reply, $semanticData, $topic ]
+		);
+	}
+
+	public function onSemanticStructuredDiscussionsShouldSaveTopicAnnotations(
+		bool &$shouldSaveTopicAnnotations,
+		SDTopic $topic,
+		SemanticData $semanticData
+	): void {
+		$this->container->run(
+			'SemanticStructuredDiscussionsShouldSaveTopicAnnotations',
+			[ &$shouldSaveTopicAnnotations, $topic, $semanticData ]
 		);
 	}
 }

@@ -123,10 +123,19 @@ class DataAnnotator {
 	 * @param SemanticData $semanticData
 	 */
 	private function addTopicAnnotations( SDTopic $topic, SemanticData $semanticData ): void {
-		$topicAnnotators = $this->annotatorStore->getTopicAnnotators( $topic );
+		$shouldSaveTopicAnnotations = true;
+		$this->hookRunner->onSemanticStructuredDiscussionsShouldSaveTopicAnnotations(
+			$shouldSaveTopicAnnotations,
+			$topic,
+			$semanticData
+		);
 
-		foreach ( $topicAnnotators as $annotator ) {
-			$annotator->addAnnotation( $semanticData );
+		if ( $shouldSaveTopicAnnotations ) {
+			$topicAnnotators = $this->annotatorStore->getTopicAnnotators( $topic );
+
+			foreach ( $topicAnnotators as $annotator ) {
+				$annotator->addAnnotation( $semanticData );
+			}
 		}
 	}
 
