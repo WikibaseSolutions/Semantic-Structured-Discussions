@@ -82,7 +82,7 @@ final class SDTopic {
 	 * @return string
 	 */
 	public function getCreator(): ?string {
-		$creator = $this->getRootRevision()['creator']['name'];
+		$creator = $rootRevision['creator']['name'] ?? null;
 
 		if ( !is_string( $creator ) ) {
 			// https://github.com/WikibaseSolutions/SemanticStructuredDiscussions/issues/11
